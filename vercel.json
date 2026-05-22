@@ -1,12 +1,11 @@
 {
   "version": 2,
-  "name": "dataproai-set",
   "builds": [
     {
-      "src": "dataproai/frontend/package.json",
-      "use": "@vercel/static-build",
+      "src": "package.json",
+      "use": "@vercel/next",
       "config": {
-        "distDir": "dist"
+        "distDir": ".next"
       }
     }
   ],
@@ -18,10 +17,6 @@
     {
       "source": "/api/dataproai/(.*)",
       "destination": "https://practitioners-nurse-continuing-dancing.trycloudflare.com/api/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ]
 }
