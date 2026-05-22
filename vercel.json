@@ -17,6 +17,10 @@
     {
       "source": "/api/dataproai/(.*)",
       "destination": "https://practitioners-nurse-continuing-dancing.trycloudflare.com/api/$1"
+    },
+    {
+      "source": "/api/social-media-content/(.*)",
+      "destination": "https://practitioners-nurse-continuing-dancing.trycloudflare.com/api/social-media-content/$1"
     }
   ]
 }
