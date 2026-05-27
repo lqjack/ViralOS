@@ -1,6 +1,7 @@
 # ViralOS — Design → Implementation Map
 
-> Traceability: design trilogy ↔ shipped code. Updated 2026-05-27.
+> Traceability: design trilogy ↔ shipped code. Updated 2026-05-27.  
+> **Status:** [PROJECT-STATUS.md](./PROJECT-STATUS.md)
 
 Use this when reviewing whether the **full design** is implemented (not Cognitive OS vision docs).
 
