@@ -20,9 +20,13 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run verify
+      - name: No-mock + unit tests
+        run: npm run verify:func
 
-      - name: Run full smoke tests (server + API checks, no API key)
+      - name: Production build
+        run: npm run build
+
+      - name: Run smoke tests (server + API checks, no API key)
         env:
           ANTHROPIC_API_KEY: ''
         run: npm run smoke-test:ci

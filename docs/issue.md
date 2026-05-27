@@ -83,7 +83,8 @@ ViralOS failed to deploy and serve API endpoints on Vercel. Root causes: inherit
 - [x] No hardcoded tunnel URLs in source
 - [x] README matches router model and layout
 - [x] Proxy routes return 503 with hint when `API_PROXY_BASE_URL` unset
-- [x] CI smoke tests pass (5/5)
+- [x] CI: `verify:func` (16 tests) + build + smoke (8/8)
+- [x] Ubuntu deploy + `verify:ubuntu:all` documented
 
 ## Lessons (infra)
 

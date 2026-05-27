@@ -37,7 +37,8 @@
 | 0 | **[DESIGN.md](./DESIGN.md)** | Design index |
 | 1 | [system-design-architecture.md](./system-design-architecture.md) | **系统设计** — 分层、组件、部署、边界 |
 | 2 | [system-interaction-design.md](./system-interaction-design.md) | **系统交互** — 用户旅程、API/SSE 契约、序列图 |
-| 3 | [system-control-data-flow.md](./system-control-data-flow.md) | **控制流与数据流** — 三 Agent 编排、SSE 总线、数据变形 |
+| 3 | [system-control-data-flow.md](./system-control-data-flow.md) | **控制流与数据流** — 四步编排、SSE 总线、数据变形 |
+| 4 | [implementation-map.md](./implementation-map.md) | **设计 ↔ 代码** 可追溯矩阵 + 验证门禁 |
 
 **Cross-repo planning (invest-ai · llm-gateway · viralos):** [cross-repo-reuse-and-roadmap.md](./cross-repo-reuse-and-roadmap.md) (canonical matrix in invest-ai `docs/architecture/`)
 

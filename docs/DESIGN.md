@@ -88,6 +88,7 @@ Control and data detail: [control/data §2](./system-control-data-flow.md#2-端�
 
 | Target | Stack | Notes |
 |--------|-------|-------|
+| **Ubuntu (recommended)** | `npm run deploy:ubuntu` · PORT **3010** | Build on server — [deploy-ubuntu.md](./deploy-ubuntu.md) |
 | Vercel | Next.js 14 Pages Router | `ANTHROPIC_API_KEY` in project env |
 | Self-host | `npm run build && npm start` | Same env contract |
 
@@ -123,6 +124,7 @@ Issues and gaps: [issue.md](./issue.md) · [todo.md](./todo.md).
 1. [system-design-architecture.md](./system-design-architecture.md)
 2. [system-interaction-design.md](./system-interaction-design.md)
 3. [system-control-data-flow.md](./system-control-data-flow.md)
+4. [implementation-map.md](./implementation-map.md) — design ↔ code traceability
 
 ### Product boundary & vision
 

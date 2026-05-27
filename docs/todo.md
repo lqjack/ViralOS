@@ -41,11 +41,13 @@
 ## P1 — No mock + real E2E + Ubuntu deploy
 
 - [x] `lib/real-ai-guard.js` — token usage + mock phrase guards on production path
-- [x] `verify:no-mock` + `verify:func` (13 tests, no API key)
+- [x] `verify:no-mock` + `verify:func` (16 tests, no API key)
 - [x] 4-agent pipeline (incl. Campaign Director package step) + validation
 - [x] `verify:e2e-real` — real Anthropic SSE (run on **Ubuntu**, not OOM macOS)
 - [x] `deploy:ubuntu` / `deploy:ubuntu:sync` — build on Ubuntu :3010
-- [x] [deploy-ubuntu.md](./deploy-ubuntu.md) — ops guide
+- [x] Gateway ingest (`campaign-ingest` + SSE `ingest_done`)
+- [x] `verify:ubuntu:all` — Ubuntu 一键验证脚本
+- [x] [implementation-map.md](./implementation-map.md) — design ↔ code traceability
 
 ## Verification checklist
 
@@ -61,8 +63,8 @@ npm run deploy:ubuntu:sync          # from mac
 npm run verify:ubuntu               # smoke vs VIRALOS_URL
 ANTHROPIC_API_KEY=... npm run verify:ubuntu:real   # real LLM E2E
 
-# On Ubuntu host
-SMOKE_TEST_URL=http://127.0.0.1:3010 npm run verify:e2e-real
+# On Ubuntu host (one command)
+npm run verify:ubuntu:all
 ```
 
 **Last verified:** 2026-05-27 — `verify:func` 16/16 · deploy target **Ubuntu :3010**

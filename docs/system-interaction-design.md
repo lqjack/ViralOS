@@ -165,15 +165,18 @@ Agents **do not** run in parallel. Each step waits for the previous LLM response
 flowchart LR
   A[marketAnalyst] --> B[contentWriter]
   B --> C[growthOptimizer]
-  C --> D[complete]
+  C --> D[campaignDirector]
+  D --> E[complete]
+  E --> F[ingest optional]
 ```
 
-| Step | Consumes | Produces (in prompt chain) |
-|------|----------|----------------------------|
-| 1 | User product fields | `marketData` |
-| 2 | `marketData.persona` | `contentData` |
-| 3 | `contentData` preview | `growthData` |
-| 4 | All above | `result` object in `complete` |
+| Step | Agent | Consumes | Produces |
+|------|-------|----------|----------|
+| 1 | marketAnalyst | User product fields | `marketData` |
+| 2 | contentWriter | `marketData.persona` | `contentData` |
+| 3 | growthOptimizer | `contentData` preview | `growthData` |
+| 4 | campaignDirector | All above | `result` in `complete` |
+| 5 | gateway (optional) | `result` | `ingest_done` SSE |
 
 ---
 

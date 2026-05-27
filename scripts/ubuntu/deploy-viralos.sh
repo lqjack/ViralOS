@@ -71,4 +71,4 @@ fi
 echo ""
 echo "Deployed. Local: http://127.0.0.1:${PORT}/campaign"
 echo "Verify:  SMOKE_TEST_URL=http://127.0.0.1:${PORT} npm run smoke-test"
-echo "Real E2E: ANTHROPIC_API_KEY=... SMOKE_TEST_URL=http://127.0.0.1:${PORT} npm run verify:e2e-real"
+echo "Full verify: npm run verify:ubuntu:all"
