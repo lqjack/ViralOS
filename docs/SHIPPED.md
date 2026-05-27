@@ -1,6 +1,6 @@
 # ViralOS — Shipped Implementation Status
 
-> **HEAD**: `7403979+` · **Product**: viral campaign generator (not Cognitive OS vision)  
+> **HEAD**: see [PROJECT-STATUS.md](./PROJECT-STATUS.md) · **Product**: viral campaign generator (not Cognitive OS vision)  
 > **Retro:** [issue.md § Part H](./issue.md#part-h--engineering-retrospective-2026-05-27)
 
 ## Summary

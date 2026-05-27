@@ -185,9 +185,15 @@ Scores 0–100. Above 80 = high viral potential.
 
 ---
 
-## 🔧 SDK Reference
+## 🔧 Programmatic access (shipped today)
 
-The npm package `@viralOS/sdk` is the planned client library for programmatic access. This repo ships the **self-hosted API and web UI** today.
+| Method | Entry | Docs |
+|--------|-------|------|
+| **HTTP SSE** | `POST /api/campaign` | [system-interaction-design.md](./docs/system-interaction-design.md) |
+| **CLI** | `npm run demo` → `examples/basic-campaign.js` | [examples/README.md](./examples/README.md) |
+| **Node import** | `import { streamCampaign } from './lib/campaign.js'` | `lib/campaign.js` |
+
+The npm package `@viralOS/sdk` remains a **planned** wrapper; use the table above for production integrations today.
 
 ```javascript
 // Planned SDK usage (@viralOS/sdk)

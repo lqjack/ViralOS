@@ -4,9 +4,9 @@
 
 **Canonical issue log:** [issue.md](./issue.md) · **Retro:** [issue.md § Part H](./issue.md#part-h--engineering-retrospective-2026-05-27)
 
-**Shipped summary:** [SHIPPED.md](./SHIPPED.md) · **Design traceability:** [implementation-map.md](./implementation-map.md)
+**Status snapshot:** [PROJECT-STATUS.md](./PROJECT-STATUS.md) · **Shipped:** [SHIPPED.md](./SHIPPED.md) · **Traceability:** [implementation-map.md](./implementation-map.md)
 
-**Code HEAD:** see `git log -1` on `main`
+**Code HEAD:** `4361df9` (update on each status sync commit)
 
 ---
 
@@ -64,7 +64,7 @@ Checklist:
 
 - [ ] Public Cloudflare ingress for invest-ai gateway `:8001` (enables Vercel proxy + auto-ingest from internet)
 - [x] `examples/basic-campaign.js` wired to `streamCampaign` (used by `verify:local-design` CLI path)
-- [ ] Document CLI vs HTTP API in README examples section
+- [x] Document CLI vs HTTP API — [examples/README.md](../examples/README.md) + README programmatic access table
 - [ ] NeuraDesk MCP plugin for campaigns (llm-gateway stub; cross-repo Phase 2+)
 - [ ] Persistent campaign history DB (out of current design scope)
 

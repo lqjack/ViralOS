@@ -5,7 +5,7 @@
 **Reported:** 2026-05-22  
 **Last reviewed:** 2026-05-27 (retro + issue/todo sync)  
 **Last updated:** 2026-05-27  
-**Code HEAD:** `7403979`
+**Code HEAD:** see [PROJECT-STATUS.md](./PROJECT-STATUS.md) · `git log -1`
 
 ---
 
@@ -426,7 +426,7 @@ Completed:
 ### P4 — Optional enhancements
 
 - [ ] Public tunnel / hostname for invest-ai `:8001` (Vercel `API_PROXY_BASE_URL`)
-- [ ] Refresh `examples/basic-campaign.js` to call `streamCampaign` or mark deprecated
+- [x] `examples/basic-campaign.js` calls `streamCampaign` — [examples/README.md](../examples/README.md)
 - [ ] NeuraDesk MCP plugin registration (llm-gateway stub exists; see cross-repo roadmap)
 
 ---

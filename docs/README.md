@@ -16,7 +16,7 @@
 - API: `GET|POST /api/campaign` (SSE)
 - Code: `lib/campaign.js`, `pages/api/campaign.js`
 
-**Issue & gap analysis:** [issue.md](./issue.md) (retro **Part H**, open ops **Part G**) · **Tasks:** [todo.md](./todo.md) · **Shipped:** [SHIPPED.md](./SHIPPED.md)
+**Status snapshot:** [PROJECT-STATUS.md](./PROJECT-STATUS.md) · **Issue:** [issue.md](./issue.md) (Part G ops) · **Tasks:** [todo.md](./todo.md) · **Shipped:** [SHIPPED.md](./SHIPPED.md)
 
 ### Ubuntu deploy (build on server, not localhost)
 

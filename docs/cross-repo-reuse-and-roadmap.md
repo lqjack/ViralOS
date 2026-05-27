@@ -43,6 +43,8 @@ See [README.md](./README.md) — **Cognitive OS** docs in `docs/hci-*` are visio
 
 ### Ops & vision
 
+- [PROJECT-STATUS.md](./PROJECT-STATUS.md) — on-disk status snapshot (2026-05-27)  
+- [lan-resume-checklist.md](./lan-resume-checklist.md) — Ubuntu ops when on LAN  
 - [README.md](./README.md) — doc index  
 - [issue.md](./issue.md) — retro  
 - [todo.md](./todo.md) — tasks  
