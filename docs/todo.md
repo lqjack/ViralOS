@@ -8,6 +8,10 @@
 
 **Code HEAD:** `5296ec8` (update on each status sync commit)
 
+<!-- CURSOR_HOOK_TODO:START -->
+<!-- Hook priorities — updated by retro-review-sync after auto-commit -->
+<!-- CURSOR_HOOK_TODO:END -->
+
 ---
 
 ## Retro summary (2026-05-27)

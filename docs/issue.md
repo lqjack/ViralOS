@@ -7,6 +7,10 @@
 **Last updated:** 2026-05-27  
 **Code HEAD:** see [PROJECT-STATUS.md](./PROJECT-STATUS.md) · `git log -1`
 
+<!-- CURSOR_HOOK_RETRO:START -->
+<!-- Hook retro block — updated by `.cursor/hooks/retro-review-sync.sh` after auto-commit -->
+<!-- CURSOR_HOOK_RETRO:END -->
+
 ---
 
 ## Executive Conclusion
