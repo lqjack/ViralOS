@@ -6,7 +6,7 @@
 
 **Status snapshot:** [PROJECT-STATUS.md](./PROJECT-STATUS.md) · **Shipped:** [SHIPPED.md](./SHIPPED.md) · **Traceability:** [implementation-map.md](./implementation-map.md)
 
-**Code HEAD:** `4361df9` (update on each status sync commit)
+**Code HEAD:** `5296ec8` (update on each status sync commit)
 
 ---
 
