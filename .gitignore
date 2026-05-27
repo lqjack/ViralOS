@@ -6,3 +6,5 @@ nohup.out
 node_modules/
 .next/
 .cursor/hooks/auto-commit.log
+.cursor/hooks/retro-review.log
+.cursor/hooks/.session-committed

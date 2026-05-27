@@ -27,4 +27,4 @@ Retro engine: **llm-gateway** `plugins/_hooks/retro_review_sync.py` (set `CURSOR
 
 Hook runs `npm run verify:func` (24 tests). For optional real LLM: `npm run verify:local-design` manually.
 
-**Practices:** [docs/PROJECT-STATUS.md](../../docs/PROJECT-STATUS.md) · llm-gateway [plugins/_hooks/BEST-PRACTICES.md](file:///Users/liu/Desktop/llm-gateway/plugins/_hooks/BEST-PRACTICES.md)
+**Practices:** [docs/PROJECT-STATUS.md](../../docs/PROJECT-STATUS.md) · llm-gateway `plugins/_hooks/BEST-PRACTICES.md`
