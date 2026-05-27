@@ -22,10 +22,7 @@ jobs:
 
       - run: npm run verify
 
-      - name: Start server and run smoke tests
+      - name: Run full smoke tests (server + 8 API checks)
         env:
           ANTHROPIC_API_KEY: ''
-        run: |
-          npm run start &
-          npx --yes wait-on http://localhost:3000/api/campaign --timeout 60000
-          npm run smoke-test
+        run: npm run smoke-test:ci

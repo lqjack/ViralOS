@@ -300,6 +300,12 @@ npm install && npm run dev
 open http://localhost:3000/campaign          # ViralOS — implemented
 # docs/hci-landingpage.md WeChat upload CTA  # Cognitive OS — not implemented
 
+npm run verify                               # build + 2 unit tests
+npm run verify:full                          # verify + 8 smoke checks (recommended)
+
+# Or manually:
 npm run build && npm run start &
-npm run smoke-test                           # 5/5 expected
+ANTHROPIC_API_KEY= npm run smoke-test        # 8/8 expected
 ```
+
+**Resolution commit:** `44e6c03` — Fix Vercel deploy, ViralOS-first docs, tests, Next.js 14.2.35

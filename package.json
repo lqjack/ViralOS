@@ -1,6 +1,7 @@
 {
   "name": "viralOS",
   "version": "1.0.0",
+  "type": "module",
   "description": "AI-Native Growth Operating System — Turn any product into a viral campaign",
   "private": false,
   "license": "MIT",
@@ -15,8 +16,10 @@
     "lint": "next lint",
     "demo": "node examples/basic-campaign.js",
     "smoke-test": "node scripts/smoke-test.mjs",
+    "smoke-test:ci": "node scripts/smoke-with-server.mjs",
     "test": "node --test scripts/campaign-lib.test.mjs",
-    "verify": "npm run build && npm run test"
+    "verify": "npm run build && npm run test",
+    "verify:full": "npm run verify && npm run smoke-test:ci"
   },
   "dependencies": {
     "next": "14.2.35",

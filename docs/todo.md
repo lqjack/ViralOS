@@ -39,10 +39,14 @@
 ## Verification checklist
 
 ```bash
-npm run verify          # build + unit tests
-npm run start &         # production server
-npm run smoke-test      # API smoke (5+ checks)
+npm run verify          # build + unit tests (2 tests)
+npm run verify:full     # build + tests + smoke (8 checks, server auto-started)
+# Or manually:
+npm run start &         # production server (unset ANTHROPIC_API_KEY for smoke)
+ANTHROPIC_API_KEY= npm run smoke-test
 ```
+
+**Last verified:** 2026-05-27 — `verify` pass · smoke **8/8** (with empty API key)
 
 ---
 
