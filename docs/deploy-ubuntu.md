@@ -2,6 +2,8 @@
 
 > **原则**：构建与运行放在 **Ubuntu**（CPU/内存充足），macOS 仅改代码 + rsync，避免本机 `next build` OOM。
 
+> **当前阻塞（2026-05-27）**：跨公网 SSH/tunnel 不稳定时 **先不要** 跑 `deploy:ubuntu:sync`。等同局域网后再执行本文档；此前在 macOS 用 `npm run verify:local-design`。
+
 ## 架构
 
 ```text

@@ -50,11 +50,13 @@ Use this when reviewing whether the **full design** is implemented (not Cognitiv
 
 | Priority | Command | Purpose |
 |----------|---------|---------|
-| P1 | `npm run verify:func` | no-mock + 16 unit tests |
+| P1 | `npm run verify:func` | no-mock + 24 unit tests |
+| P1 | `npm run verify:local-design` | func + optional CLI real LLM (off-LAN default) |
 | P1 | `npm run verify:full` | build + smoke (CI) |
-| P1 | `npm run deploy:ubuntu:sync` | deploy to Ubuntu |
-| P1 | `npm run verify:ubuntu:all` | Ubuntu func + smoke + real E2E |
-| P2 | `npm run verify:cross-repo-live` | gateway ingest live |
+| P1 *(LAN)* | `npm run deploy:ubuntu:sync` | deploy to Ubuntu |
+| P1 *(LAN)* | `npm run verify:ubuntu:all` | Ubuntu func + smoke + real E2E |
+| P2 *(LAN)* | `npm run verify:cross-repo-live` | gateway ingest live |
+| CLI | `npm run demo` | `examples/basic-campaign.js` → `streamCampaign` |
 
 ---
 

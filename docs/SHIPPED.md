@@ -1,6 +1,7 @@
 # ViralOS — Shipped Implementation Status
 
-> **HEAD**: see latest `main` · **Product**: viral campaign generator (not Cognitive OS vision)
+> **HEAD**: `dcacb71` · **Product**: viral campaign generator (not Cognitive OS vision)  
+> **Retro:** [issue.md § Part H](./issue.md#part-h--engineering-retrospective-2026-05-27)
 
 ## Summary
 
@@ -30,8 +31,8 @@ What remains is **operator work on Ubuntu** (deploy + real API key), not missing
 
 | Step | Where | Command |
 |------|-------|---------|
-| 1 | macOS / CI | `npm run verify:func` |
-| 2 | macOS / CI | `npm run verify:full` |
+| 1 | macOS / CI | `npm run verify:func` (**24/24**) |
+| 2 | macOS / CI | `npm run verify:full` (smoke **10/10**) |
 | 3 | Ubuntu deploy | `npm run deploy:ubuntu:sync` |
 | 4 | Ubuntu | `npm run verify:ubuntu:all` |
 | 5 | Ubuntu + gateway | `API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live` |

@@ -29,7 +29,8 @@
     "deploy:ubuntu": "./scripts/ubuntu/deploy-viralos.sh",
     "deploy:ubuntu:sync": "./scripts/deploy-ubuntu-sync.sh",
     "verify:ubuntu:all": "./scripts/ubuntu/verify-all-on-ubuntu.sh",
-    "verify:all": "npm run verify:func"
+    "verify:local-design": "node scripts/verify-local-design.mjs",
+    "verify:all": "npm run verify:local-design"
   },
   "dependencies": {
     "next": "14.2.35",

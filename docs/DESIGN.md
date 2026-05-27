@@ -100,15 +100,17 @@ Details: [architecture §6](./system-design-architecture.md#6-deployment).
 
 | Priority | Command | Where |
 |----------|---------|--------|
-| P1 | `npm run verify:func` | macOS / CI — no-mock scan + unit tests (no API key) |
-| P1 | `npm run deploy:ubuntu:sync` | macOS → rsync + build on Ubuntu |
-| P1 | `npm run verify:ubuntu` | Client → Ubuntu `:3010` smoke |
-| P1 | `npm run verify:ubuntu:real` | Real Anthropic SSE (key on Ubuntu `.env`) |
-| P2 | `npm run verify:cross-repo-live` | Ubuntu — gateway ingest (`API_PROXY_BASE_URL`) |
+| P1 | `npm run verify:local-design` | **Off-LAN default** — func + optional CLI real LLM |
+| P1 | `npm run verify:func` | no-mock + 24 unit tests (no API key) |
+| P1 *(LAN)* | `npm run deploy:ubuntu:sync` | macOS → rsync + build on Ubuntu |
+| P1 *(LAN)* | `npm run verify:ubuntu:all` | Ubuntu smoke + real E2E |
+| P2 *(LAN)* | `npm run verify:cross-repo-live` | gateway ingest on Ubuntu |
 
 ```bash
-npm run verify:func          # preferred on macOS (avoid local next build OOM)
-SMOKE_TEST_URL=http://127.0.0.1:3010 npm run verify:e2e-real   # on Ubuntu
+npm run verify:local-design   # now (Ubuntu ops deferred until LAN)
+npm run demo                  # ANTHROPIC_API_KEY=... CLI streamCampaign
+# LAN only:
+npm run deploy:ubuntu:sync && ssh ubuntu 'cd ~/ViralOS && npm run verify:ubuntu:all'
 ```
 
 Deploy: [deploy-ubuntu.md](./deploy-ubuntu.md) · invest-ai [ubuntu-production-deploy](https://github.com/lqjack/dataproaiset/blob/main/docs/operations/ubuntu-production-deploy.md).

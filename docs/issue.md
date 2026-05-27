@@ -3,8 +3,9 @@
 **Status:** Shipped (code complete) · **Open:** operator verification on Ubuntu  
 **Severity:** High (deploy) — **closed** · Medium (ops sign-off) — **open**  
 **Reported:** 2026-05-22  
-**Last reviewed:** 2026-05-27  
-**Last updated:** 2026-05-27 (design implementation + issue/todo sync)
+**Last reviewed:** 2026-05-27 (retro + issue/todo sync)  
+**Last updated:** 2026-05-27  
+**Code HEAD:** `dcacb71`
 
 ---
 
@@ -30,13 +31,15 @@ The May 2026 deploy incident was a **symptom**, not the root strategic issue. In
 
 # Part G — Open Issues & Operator Backlog (2026-05-27)
 
+> **LAN deferral (2026-05-27):** Remote Ubuntu / cross-public-network access is **unreliable**. All **OPS-*** items below are **paused until same-LAN** access to `192.168.1.4` or physical console. Until then, use `npm run verify:local-design` on macOS.
+
 ## Active issues (not code blockers)
 
 | ID | Issue | Impact | Mitigation |
 |----|--------|--------|------------|
-| **OPS-1** | **Ubuntu deploy + real E2E not signed off** in this environment | Cannot claim production-ready until `verify:ubuntu:all` passes on host | SSH to Ubuntu → `npm run deploy:ubuntu:sync` or `deploy-viralos.sh` → `verify:ubuntu:all` with `ANTHROPIC_API_KEY` in `.env` |
+| **OPS-1** | **Ubuntu deploy + real E2E not signed off** | Cannot claim production-ready until `verify:ubuntu:all` on host | **Deferred off-LAN.** On LAN: `deploy:ubuntu:sync` → `verify:ubuntu:all` |
 | **OPS-2** | **macOS insufficient CPU/RAM** for full `next build` / long LLM runs | Local `verify:full` / `verify:e2e-real` OOM or timeout | Use `npm run verify:func` on Mac; build + real E2E **only on Ubuntu** ([deploy-ubuntu.md](./deploy-ubuntu.md)) |
-| **OPS-3** | **SSH / tunnel to Ubuntu** may be down (`frpc`, cloudflared linux connector) | `deploy:ubuntu:sync` fails from Mac | LAN/console: `cd ~/llm-gateway && bun run recover:remote-ssh`; see invest-ai [cloudflared-tunnel-stability](https://github.com/lqjack/dataproaiset/blob/main/docs/operations/cloudflared-tunnel-stability.md) |
+| **OPS-3** | **SSH / tunnel to Ubuntu** may be down (`frpc`, cloudflared linux connector) | `deploy:ubuntu:sync` fails from Mac over public internet | **Wait for LAN** or console; then `recover:remote-ssh` — see [cloudflared-tunnel-stability](https://github.com/lqjack/dataproaiset/blob/main/docs/operations/cloudflared-tunnel-stability.md) |
 | **OPS-4** | **`API_PROXY_BASE_URL` on Vercel** cannot reach LAN `:8001` | Proxy routes + auto-ingest fail on public deploy | Campaign LLM still works via `ANTHROPIC_API_KEY`; set proxy only when invest-ai gateway is **publicly reachable** (dedicated tunnel hostname → `:8001`, not `gateway.datapro.asia` :3000) |
 | **OPS-5** | **Hostname confusion** `gateway.datapro.asia` vs invest-ai gateway | Wrong proxy target | `gateway.datapro.asia` → llm-gateway **:3000**; ViralOS proxy/ingest → invest-ai **:8001** (`http://127.0.0.1:8001` on Ubuntu, `http://192.168.1.4:8001` from LAN) |
 
@@ -51,14 +54,103 @@ The May 2026 deploy incident was a **symptom**, not the root strategic issue. In
 | P4 | `examples/basic-campaign.js` align with `streamCampaign` / document as CLI alternative | Dev |
 | — | Cognitive OS MVP (Option B) | **Deferred** — see Part E |
 
-## Resolved since last issue sync
+## Resolved since last issue sync (local, off-LAN)
+
+- [x] `examples/basic-campaign.js` — CLI `streamCampaign` (real Anthropic, no mock)  
+- [x] `npm run verify:local-design` — func + optional CLI while Ubuntu ops deferred  
+- [x] Gateway client search/ingest/schema + mock-fetch unit tests  
+
+## Resolved (earlier)
 
 - [x] Design trilogy + [implementation-map.md](./implementation-map.md) traceability  
 - [x] No-mock production path (`real-ai-guard`, `verify:no-mock`)  
 - [x] 4-agent pipeline, validation, gateway ingest SSE (`ingest_done` / `ingest_error`)  
 - [x] Ubuntu deploy scripts + [deploy-ubuntu.md](./deploy-ubuntu.md)  
-- [x] `GET /api/health` for canary (smoke 9/9)  
+- [x] `GET /api/health` for canary (smoke **10/10**)  
 - [x] `pages/api/integrations/viralos/` BFF proxy  
+- [x] Gateway client offline tests (`gateway-client.test.mjs`) — catalog, schema, ingest, search  
+- [x] SSE contract tests (`sse-campaign-e2e.test.mjs`) — 4-agent `assertCampaignE2eEvents`  
+- [x] [SHIPPED.md](./SHIPPED.md) — shipped vs operator backlog  
+- [x] CI: `verify:func` **24/24** (no API key)
+
+## Retro → open work mapping
+
+| Retro finding | Open item | Doc |
+|---------------|-----------|-----|
+| Code matches design trilogy for ViralOS | — | [SHIPPED.md](./SHIPPED.md) |
+| No production mock path | — | `verify:no-mock` |
+| Ubuntu not signed off in dev env | **OPS-1** | [todo.md § P3](./todo.md#p3--operator-verification-open) |
+| Mac OOM on `next build` | **OPS-2** | [deploy-ubuntu.md](./deploy-ubuntu.md) |
+| `deploy:ubuntu:sync` SSH timeout | **OPS-3** | invest-ai tunnel docs |
+| Vercel cannot hit LAN `:8001` | **OPS-4** | Part G below |
+| Wrong hostname for proxy | **OPS-5** | [cross-repo-reuse-and-roadmap.md](./cross-repo-reuse-and-roadmap.md) |
+
+---
+
+# Part H — Engineering Retrospective (2026-05-27)
+
+## What we set out to fix
+
+1. **Deploy incident** — Vercel 404s from wrong router paths and inherited `vercel.json`.  
+2. **Product drift** — Cognitive OS vision docs vs shipped ViralOS campaign generator in one repo.  
+3. **Design without traceability** — No map from trilogy docs → `lib/` / `pages/api/`.  
+4. **“Mock” risk** — Campaign path must use real Anthropic usage in production.  
+5. **Wrong dev machine** — macOS OOM; build and real LLM E2E belong on **Ubuntu :3010**.
+
+## What shipped (this cycle)
+
+| Deliverable | Evidence |
+|-------------|----------|
+| ViralOS-first boundary | `docs/README.md`, README, Part D closed |
+| 4-agent pipeline + director package step | `lib/campaign.js`, `AGENT_ORDER` |
+| Real-AI guards | `lib/real-ai-guard.js`, `requireRealUsage` default `true` |
+| Campaign UI (stepper + structured result) | `pages/campaign.js` |
+| Design trilogy + implementation map | `docs/DESIGN.md`, `system-design-*.md`, `implementation-map.md` |
+| Gateway ingest + BFF | `campaign-ingest.js`, `integrations/viralos` proxy |
+| Verification ladder | `verify:func` → `verify:full` → `verify:ubuntu:*` → `verify:cross-repo-live` |
+| Health + expanded tests | `/api/health`, **24** unit tests, **10** smoke checks |
+
+## What went well
+
+- **Single product decision** (Option A) stopped scope creep into Cognitive OS for this repo.  
+- **Traceability matrix** (`implementation-map.md`) makes “is the design implemented?” answerable.  
+- **No-mock gate** catches hardcoded AI text and missing token usage before merge.  
+- **Tests without API keys** — inject `createClient` only in `campaign-lib.test.mjs`; production path unchanged.  
+- **Env-gated proxies** — legacy dataproai routes return 503 with hint instead of silent failure.
+
+## What did not go well
+
+| Problem | Root cause | Lesson |
+|---------|------------|--------|
+| Ubuntu deploy unverified | SSH/tunnel to `ssh.datapro.asia` intermittent | Treat **OPS sign-off** as release gate, not optional |
+| Mac `verify:full` heavy | RAM for `next build` + dev server | CI on GitHub Ubuntu; local Mac uses `verify:func` or `verify:local-design` |
+| SSH to Ubuntu down | Tunnel/frp intermittent | `verify:local-design` until LAN; defer `deploy:ubuntu:sync` |
+| docs/ still large | 17 hci files unchanged in scope | Vision archive OK; **do not** implement from hci-* without new decision |
+| Cross-repo ingest untested live | invest-ai `:8001` not running in agent session | Run `verify:cross-repo-live` on Ubuntu after `start-core-gateway.sh` |
+
+## Metrics (local, 2026-05-27)
+
+| Gate | Result | Notes |
+|------|--------|-------|
+| `npm run verify:no-mock` | PASS | `lib/`, `pages/`, `.next/` scan |
+| `npm run verify:func` | **24/24** | incl. gateway + SSE contract tests |
+| `npm run verify:full` | build + **10/10** smoke | after `npm run build` |
+| `verify:ubuntu:all` | **Not run** | blocked by OPS-1 / OPS-3 |
+| `verify:cross-repo-live` | **Not run** | blocked by gateway + OPS-1 |
+
+## Decisions (record)
+
+| # | Decision | Rationale |
+|---|----------|-----------|
+| D1 | ViralOS-first; Cognitive OS deferred | Shipped code is campaign generator only |
+| D2 | Real Anthropic only in production | `real-ai-guard` + `verify:no-mock` |
+| D3 | Ubuntu for build + real E2E | Mac OOM; PORT **3010** |
+| D4 | Proxy optional, 503 when unset | Vercel may not reach LAN gateway |
+| D5 | `gateway.datapro.asia` ≠ invest-ai ingest | :3000 llm-gateway vs :8001 invest-ai |
+
+## Action items (synced to [todo.md](./todo.md))
+
+All open work is **P3 operator** or **P4 optional** — no P0–P2 code gaps for the shipped product.
 
 ---
 
@@ -209,7 +301,7 @@ The docs read like a **pre-code design archive** for “Personal Cognitive OS.�
 | **Job to be done** | “Understand my behavior / life changes” | “Generate viral marketing campaign for a product” |
 | **Primary input** | WeChat export, GitHub, browser history | Product name + description (form) |
 | **Core output** | Weekly cognitive report, episode, paywall split | Multi-platform marketing copy + Viral Score™ |
-| **Agents** | State interpreter, pattern detector, narrative generator | Market Analyst, Content Writer, Growth Optimizer |
+| **Agents** | State interpreter, pattern detector, narrative generator | Market Analyst, Content Writer, Growth Optimizer, Campaign Director |
 | **Backend** | FastAPI, PostgreSQL, pgvector, S3, batch pipeline | Next.js API routes, Anthropic SDK, no DB |
 | **Frontend** | Dashboard, Timeline, Insight, Pricing, WeChat upload | Landing, `/campaign`, debug pages for legacy proxies |
 | **Monetization** | Subscription tiers ($9–$99/mo), cognitive paywall | Not implemented (hackathon / OSS demo) |
@@ -361,6 +453,7 @@ ff1f277 Simplify vercel.json per README: Focus on core Next.js landing page expe
 (2026-05-27) Phases 1–4: campaign API, design trilogy, no-mock, Ubuntu deploy
 1e20b37 Complete design implementation: no-mock, Ubuntu deploy, gateway ingest
 617f3f8 docs: implementation-map + interaction sync
+dcacb71 P2: health probe, gateway/SSE tests, SHIPPED + issue/todo ops backlog
 ```
 
 ---
@@ -387,4 +480,4 @@ open http://localhost:3000/campaign          # ViralOS — implemented
 # docs/hci-landingpage.md WeChat upload CTA  # Cognitive OS — not implemented
 ```
 
-**Key commits:** `1e20b37` (no-mock + Ubuntu + ingest) · `617f3f8` (implementation map) · `596fcd5` (design trilogy)
+**Key commits:** `1e20b37` (no-mock + Ubuntu + ingest) · `617f3f8` (implementation map) · `dcacb71` (health + P2 tests + ops sync)

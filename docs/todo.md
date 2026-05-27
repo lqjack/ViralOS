@@ -2,24 +2,51 @@
 
 **Product decision:** Option A — **ViralOS-first** (shipped product is campaign generator; `docs/` holds Cognitive OS vision archive).
 
-**Canonical issue log:** [issue.md](./issue.md) (open ops items: [issue.md § Part G](./issue.md#part-g--open-issues--operator-backlog-2026-05-27))
+**Canonical issue log:** [issue.md](./issue.md) · **Retro:** [issue.md § Part H](./issue.md#part-h--engineering-retrospective-2026-05-27)
 
 **Shipped summary:** [SHIPPED.md](./SHIPPED.md) · **Design traceability:** [implementation-map.md](./implementation-map.md)
+
+**Code HEAD:** `dcacb71`
+
+---
+
+## Retro summary (2026-05-27)
+
+| Area | Status |
+|------|--------|
+| P0–P2 application + docs for shipped design | **Done** — see [SHIPPED.md](./SHIPPED.md) |
+| Design trilogy ↔ code traceability | **Done** — [implementation-map.md](./implementation-map.md) |
+| No-mock production path | **Done** — `verify:no-mock` + `real-ai-guard` |
+| Local verification | **Done** — `verify:func` **24/24**; off-LAN: `verify:local-design` |
+| CI smoke | **10/10** (after `npm run build`) |
+| Ubuntu ops sign-off | **Open** — [issue.md Part G](./issue.md#part-g--open-issues--operator-backlog-2026-05-27) OPS-1–5 |
+| Cognitive OS MVP | **Deferred** — not this repo |
 
 ---
 
 ## P3 — Operator verification (OPEN)
 
-> Application code for the shipped design is **complete**. These items require a reachable **Ubuntu** host.
+> Application code for the shipped design is **complete**. These items require a reachable **Ubuntu** host. Full context: [issue.md Part G](./issue.md#part-g--open-issues--operator-backlog-2026-05-27).
 
-- [ ] **OPS-1** Deploy on Ubuntu: `npm run deploy:ubuntu:sync` (from Mac) or `./scripts/ubuntu/deploy-viralos.sh` (on host)
-- [ ] **OPS-1** Run `npm run verify:ubuntu:all` on Ubuntu with `ANTHROPIC_API_KEY` in `.env` (func + smoke + `verify:e2e-real`)
-- [ ] **OPS-3** If SSH fails: recover tunnel on Ubuntu (`llm-gateway`: `bun run recover:remote-ssh`) — see [issue.md](./issue.md) Part G
-- [ ] **OPS-2** Avoid full `verify:full` on memory-constrained Mac; use `verify:func` locally
-- [ ] Start invest-ai gateway on Ubuntu: `~/dataproaiset/dataproaiset/scripts/ubuntu/start-core-gateway.sh`
-- [ ] **Cross-repo live:** `API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live` (on Ubuntu)
-- [ ] **OPS-4** Vercel: set `ANTHROPIC_API_KEY`; only set `API_PROXY_BASE_URL` if `:8001` is publicly reachable (not `gateway.datapro.asia` :3000)
-- [ ] **OPS-5** Document chosen proxy URL in Vercel env after tunnel/LAN decision
+| ID | Task | Command / action |
+|----|------|------------------|
+| **OPS-1** | Deploy ViralOS on Ubuntu | `npm run deploy:ubuntu:sync` (Mac) or `./scripts/ubuntu/deploy-viralos.sh` (host) |
+| **OPS-1** | Sign off real LLM E2E | `ANTHROPIC_API_KEY` in `~/ViralOS/.env` → `npm run verify:ubuntu:all` |
+| **OPS-2** | Do not rely on Mac for full build | Use `npm run verify:func` on Mac; `verify:full` on CI or Ubuntu |
+| **OPS-3** | Fix SSH if sync fails | Ubuntu: `cd ~/llm-gateway && bun run recover:remote-ssh` |
+| **OPS-4** | Vercel env | Set `ANTHROPIC_API_KEY` (required). `API_PROXY_BASE_URL` only if `:8001` is public |
+| **OPS-5** | Correct proxy target | Ubuntu/LAN: `http://127.0.0.1:8001` or `http://192.168.1.4:8001` — not `gateway.datapro.asia:3000` |
+| — | Start invest-ai gateway | `~/dataproaiset/dataproaiset/scripts/ubuntu/start-core-gateway.sh` |
+| — | Cross-repo live ingest | `API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live` |
+
+Checklist:
+
+- [ ] **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
+- [ ] **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
+- [ ] **OPS-3** SSH/tunnel stable (if sync fails, recover first)
+- [ ] invest-ai gateway running on `:8001`
+- [ ] `verify:cross-repo-live` passes on Ubuntu
+- [ ] **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
 
 ---
 
@@ -32,50 +59,64 @@
 
 ---
 
-## P0 — Product boundary (done)
+## P0 — Product boundary ✅
 
 - [x] Choose ViralOS-first vs Cognitive OS-first vs split repos → **ViralOS-first**
 - [x] Record decision in `docs/README.md`
 - [x] Add README “Relationship to docs/” section
 
-## P1 — ViralOS hardening (done)
+---
+
+## P1 — ViralOS hardening ✅
 
 - [x] Remove legacy `/route` and `/social-media-content` from landing nav
 - [x] Bump Next.js past 14.2.0 security advisory → `14.2.35`
 - [x] Unit tests for campaign stream (`requireRealUsage: false` inject only in tests)
-- [x] Extend smoke tests (400 missing product, 405 method, health, integrations proxy)
-- [x] CI runs `verify` + smoke tests (no API key in CI env)
+- [x] Smoke: 400/405, health, integrations proxy, campaign metadata with `agents[]`
+- [x] CI: `verify:func` + build + smoke (no API key)
 
-## P1 — No mock + real E2E + Ubuntu deploy (done — code)
+---
 
-- [x] `lib/real-ai-guard.js` — token usage + mock phrase guards on production path
-- [x] `verify:no-mock` + `verify:func` (16 tests, no API key)
+## P1 — No mock + real E2E + Ubuntu deploy ✅ (code)
+
+- [x] `lib/real-ai-guard.js` — token usage + mock phrase guards
+- [x] `verify:no-mock` + `verify:func`
 - [x] 4-agent pipeline (incl. Campaign Director) + validation
 - [x] `verify:e2e-real` — real Anthropic SSE (run on **Ubuntu**)
-- [x] `deploy:ubuntu` / `deploy:ubuntu:sync` — build on Ubuntu `:3010`
-- [x] Gateway ingest (`campaign-ingest` + SSE `ingest_done` / `ingest_error`)
-- [x] `verify:ubuntu:all` — `scripts/ubuntu/verify-all-on-ubuntu.sh`
+- [x] `deploy:ubuntu` / `deploy:ubuntu:sync` — PORT **3010**
+- [x] Gateway ingest + SSE `ingest_done` / `ingest_error`
+- [x] `verify:ubuntu:all` script
 - [x] [implementation-map.md](./implementation-map.md) · [SHIPPED.md](./SHIPPED.md)
-- [x] `GET /api/health` + smoke 9/9
 - [x] `pages/api/integrations/viralos/` BFF proxy
 
-## P2 — Docs hygiene (done)
+---
+
+## P2 — Cross-repo client & quality ✅
+
+- [x] Gateway client unit tests (`fetchRouteCatalog`, `ingestCampaign`, `searchCampaigns`, schema)
+- [x] SSE pipeline contract tests (`sse-campaign-e2e.test.mjs`)
+- [x] `GET /api/health` liveness + smoke
+- [ ] `verify:cross-repo-live` on Ubuntu with gateway running → **moved to P3**
+
+---
+
+## P2 — Docs hygiene ✅
 
 - [x] `docs/README.md` index with status column
-- [x] `docs/issue.md` canonical issue + gap analysis + **Part G open ops**
+- [x] `docs/issue.md` retro (Part H) + gap analysis + Part G ops backlog
 - [x] Cross-link shipped code (`/campaign`, `/api/campaign`, `lib/campaign.js`)
-- [x] Dedupe hci-mvp / hci-mcp-target / hci-abstract → [cognitive-os-mvp-canonical.md](./cognitive-os-mvp-canonical.md)
-- [x] English summary → [COGNITIVE-OS-EN.md](./COGNITIVE-OS-EN.md)
-- [x] Design trilogy: [DESIGN.md](./DESIGN.md) · [system-design-architecture.md](./system-design-architecture.md) · [system-interaction-design.md](./system-interaction-design.md) · [system-control-data-flow.md](./system-control-data-flow.md)
-- [x] [deploy-ubuntu.md](./deploy-ubuntu.md)
+- [x] [cognitive-os-mvp-canonical.md](./cognitive-os-mvp-canonical.md) · [COGNITIVE-OS-EN.md](./COGNITIVE-OS-EN.md)
+- [x] Design trilogy + [deploy-ubuntu.md](./deploy-ubuntu.md)
 
-## Infrastructure (closed)
+---
 
-- [x] Pages Router API handlers at `pages/api/`
+## Infrastructure ✅
+
+- [x] Pages Router API at `pages/api/`
 - [x] `/api/campaign` SSE streaming
 - [x] Env-based proxy (`API_PROXY_BASE_URL`)
 - [x] `.env.example`, `.gitignore`, CI workflow
-- [x] `npm run build` + `npm run smoke-test`
+- [x] `npm run build` + smoke-test
 
 ---
 
@@ -83,12 +124,12 @@
 
 ```bash
 # macOS — lightweight (no full build)
-npm run verify:func
+npm run verify:func          # 24/24 + no-mock
 
 # macOS / CI — full
-npm run verify:full
+npm run verify:full          # build + smoke 10/10
 
-# Ubuntu (after deploy) — required for ops sign-off
+# Ubuntu — ops sign-off (required for production claim)
 npm run deploy:ubuntu:sync
 npm run verify:ubuntu:all
 
@@ -96,8 +137,12 @@ npm run verify:ubuntu:all
 API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live
 ```
 
-**Last verified (local):** 2026-05-27 — `verify:func` **16/16** · CI smoke **9/9**  
-**Pending (operator):** `verify:ubuntu:all` on production Ubuntu — see P3 above
+| Gate | Last run (2026-05-27) | Where |
+|------|------------------------|-------|
+| `verify:func` | **24/24** PASS | macOS |
+| `verify:full` | **10/10** smoke (after build) | macOS / CI |
+| `verify:ubuntu:all` | Not run | Ubuntu — **P3** |
+| `verify:cross-repo-live` | Not run | Ubuntu + gateway — **P3** |
 
 ---
 
