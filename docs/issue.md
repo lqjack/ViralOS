@@ -72,6 +72,8 @@ ViralOS failed to deploy and serve API endpoints on Vercel. Root causes: inherit
 | Design index + architecture / interaction / control-flow docs | `docs/DESIGN.md`, `docs/system-design-*.md`, `docs/system-control-data-flow.md` |
 | README + doc index + cross-repo links | `README.md`, `docs/README.md`, `docs/cross-repo-reuse-and-roadmap.md`, `docs/todo.md` |
 | Campaign engine aligned to documented pipeline (validation, exports) | `lib/campaign.js`, `lib/campaign-validate.js`, `lib/sse-parse.js` |
+| Gateway auto-ingest after `complete` (Phase 4.3) | `lib/campaign-ingest.js`, `lib/gateway-client.js`, SSE `ingest_done` / `ingest_error` |
+| No-mock production guards + Ubuntu deploy/verify | `lib/real-ai-guard.js`, `scripts/verify-no-mock.sh`, `docs/deploy-ubuntu.md`, `scripts/ubuntu/deploy-viralos.sh` |
 
 ## Deployment Acceptance Criteria
 

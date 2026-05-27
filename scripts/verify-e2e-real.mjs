@@ -9,7 +9,11 @@ import { spawn } from 'node:child_process'
 import { setTimeout as delay } from 'node:timers/promises'
 import { postCampaignAndCollectEvents, assertCampaignE2eEvents } from './sse-campaign-e2e.mjs'
 
-const BASE_URL = process.env.SMOKE_TEST_URL || 'http://localhost:3000'
+const BASE_URL = (
+  process.env.VIRALOS_URL ||
+  process.env.SMOKE_TEST_URL ||
+  'http://127.0.0.1:3010'
+).replace(/\/$/, '')
 const AUTO_START = process.env.E2E_AUTO_START !== '0'
 
 async function waitForServer(url, attempts = 30) {

@@ -17,11 +17,19 @@
     "demo": "node examples/basic-campaign.js",
     "smoke-test": "node scripts/smoke-test.mjs",
     "smoke-test:ci": "node scripts/smoke-with-server.mjs",
-    "test": "node --test scripts/campaign-lib.test.mjs scripts/campaign-validate.test.mjs scripts/sse-parse.test.mjs",
-    "verify": "npm run build && npm run test",
+    "verify:no-mock": "bash scripts/verify-no-mock.sh",
+    "test": "node --test scripts/campaign-lib.test.mjs scripts/campaign-validate.test.mjs scripts/sse-parse.test.mjs scripts/gateway-client.test.mjs scripts/real-ai-guard.test.mjs scripts/campaign-ingest.test.mjs",
+    "verify:func": "npm run verify:no-mock && npm run test",
+    "verify": "npm run build && npm run verify:func",
     "verify:full": "npm run verify && npm run smoke-test:ci",
     "verify:e2e-real": "node scripts/verify-e2e-real.mjs",
-    "verify:all": "npm run verify:full && npm run verify:e2e-real"
+    "verify:ubuntu": "node scripts/verify-ubuntu-e2e.mjs",
+    "verify:ubuntu:real": "VERIFY_UBUNTU_REAL=1 node scripts/verify-ubuntu-e2e.mjs --real",
+    "verify:cross-repo-live": "node scripts/cross-repo-live-e2e.mjs",
+    "deploy:ubuntu": "./scripts/ubuntu/deploy-viralos.sh",
+    "deploy:ubuntu:sync": "./scripts/deploy-ubuntu-sync.sh",
+    "verify:ubuntu:all": "./scripts/ubuntu/verify-all-on-ubuntu.sh",
+    "verify:all": "npm run verify:func"
   },
   "dependencies": {
     "next": "14.2.35",

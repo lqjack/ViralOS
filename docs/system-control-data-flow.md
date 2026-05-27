@@ -13,7 +13,8 @@
 |------|----------|--------|
 | **Campaign UI** | React 事件处理 | 何时 POST、如何解析 SSE、错误展示 |
 | **Campaign API** | `handler(req,res)` | Method 分支、env 检查、SSE 头、try/catch |
-| **Campaign engine** | `streamCampaign` | 三 Agent 严格顺序、每步 `send()` |
+| **Campaign engine** | `streamCampaign` | 3× LLM Agent + Campaign Director 打包；`real-ai-guard` |
+| **Gateway ingest** | `ingestCampaignIfConfigured` | `API_PROXY_BASE_URL` 设置时 POST complete 后 |
 | **runAgent** | `messages.create` | JSON 解析成功/失败 |
 | **Proxy** | `proxyRequest` | base URL 是否存在、上游状态透传 |
 
@@ -35,12 +36,14 @@ flowchart TB
     A1[marketAnalyst]
     A2[contentWriter]
     A3[growthOptimizer]
+    A4[campaignDirector]
     C[complete]
+    IG[ingest optional]
   end
 
   F --> G --> M
   M -->|POST| K
-  K -->|ok| S --> A1 --> A2 --> A3 --> C
+  K -->|ok| S --> A1 --> A2 --> A3 --> A4 --> C --> IG
   S --> P
 ```
 

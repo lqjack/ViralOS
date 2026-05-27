@@ -18,6 +18,12 @@
 
 **Issue & gap analysis:** [issue.md](./issue.md) · **Tasks:** [todo.md](./todo.md)
 
+### Ubuntu deploy (build on server, not localhost)
+
+| Doc | Command |
+|-----|---------|
+| [deploy-ubuntu.md](./deploy-ubuntu.md) | `npm run deploy:ubuntu:sync` · `npm run verify:ubuntu` |
+
 ### Shipped product — system design trilogy
 
 | # | Document | Focus |

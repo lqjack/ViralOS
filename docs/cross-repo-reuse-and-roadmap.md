@@ -16,7 +16,11 @@ This repo is **ViralOS** — **growth / viral campaign** generation (`/campaign`
 
 ## Reuse from invest-ai
 
-- **Optional proxies:** `pages/api/stock`, `dataproai`, `social-media-content` forward to invest-ai gateway when `API_PROXY_BASE_URL` is set — prefer **one** gateway base URL (see canonical doc Phase 2).
+- **Optional proxies:** `pages/api/stock`, `dataproai`, `social-media-content` → invest-ai gateway when `API_PROXY_BASE_URL` is set (see canonical doc).
+- **Gateway runs on Ubuntu**, not Mac localhost: invest-ai [ubuntu-production-deploy.md](https://github.com/lqjack/dataproaiset/blob/main/docs/operations/ubuntu-production-deploy.md) — `API_PROXY_BASE_URL=http://192.168.1.4:8001` (LAN), not `gateway.datapro.asia` (:3000).
+- **Client:** `lib/gateway-client.js` — `fetchRouteCatalog()`, `ingestCampaign()`.
+- **Proxy:** `lib/proxy.js` — timeouts/retries via `API_PROXY_*` env vars (`.env.example`).
+- **Ingest:** POST campaign exports to gateway `/api/integrations/viralos/campaigns`.
 - Do **not** duplicate dataproai crawlers or stock backend inside ViralOS.
 
 ## Reuse from llm-gateway

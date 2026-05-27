@@ -225,6 +225,23 @@ const campaign = await director.run()
 
 ---
 
+## 🖥️ Deploy on Ubuntu (recommended — avoids macOS OOM)
+
+Build and run on your Ubuntu server (`PORT=3010` by default):
+
+```bash
+# From macOS: rsync + remote build/start
+npm run deploy:ubuntu:sync
+
+# Verify against Ubuntu (LAN example)
+VIRALOS_URL=http://192.168.1.4:3010 npm run verify:ubuntu
+```
+
+On the Ubuntu host: set `ANTHROPIC_API_KEY` in `.env`, then `npm run deploy:ubuntu`.  
+Full guide: [docs/deploy-ubuntu.md](./docs/deploy-ubuntu.md).
+
+---
+
 ## 🚀 Deploy to Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/viralOS/viralOS&env=ANTHROPIC_API_KEY)

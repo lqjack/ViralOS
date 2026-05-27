@@ -17,7 +17,7 @@ This page is the **entry point** for ViralOS system design. Three companion docu
 
 ## 1. One-line summary
 
-**ViralOS** runs a **sequential three-agent pipeline** (Market Analyst → Content Writer → Growth Optimizer) on the server, streams progress over **SSE**, and returns a unified campaign package with persona, multi-platform content, and Viral Score™.
+**ViralOS** runs a **sequential four-step pipeline** (Market Analyst → Content Writer → Growth Optimizer → Campaign Director) on the server with **real Anthropic calls only** (`real-ai-guard`), streams progress over **SSE**, optionally ingests results to invest-ai gateway, and returns a unified campaign package with Viral Score™.
 
 ---
 
@@ -61,7 +61,8 @@ flowchart LR
 ├────────────────────────────────────────────────────────────┤
 │ API — pages/api/campaign.js (GET info · POST SSE)          │
 ├────────────────────────────────────────────────────────────┤
-│ Domain — lib/campaign.js (3-agent sequential pipeline)     │
+│ Domain — lib/campaign.js (4-step pipeline + validation)   │
+│          lib/real-ai-guard.js · lib/campaign-ingest.js     │
 ├────────────────────────────────────────────────────────────┤
 │ External — Anthropic Messages API (claude-sonnet-4-…)      │
 └────────────────────────────────────────────────────────────┘
@@ -96,10 +97,20 @@ Details: [architecture §6](./system-design-architecture.md#6-deployment).
 
 ## 6. Verification
 
+| Priority | Command | Where |
+|----------|---------|--------|
+| P1 | `npm run verify:func` | macOS / CI — no-mock scan + unit tests (no API key) |
+| P1 | `npm run deploy:ubuntu:sync` | macOS → rsync + build on Ubuntu |
+| P1 | `npm run verify:ubuntu` | Client → Ubuntu `:3010` smoke |
+| P1 | `npm run verify:ubuntu:real` | Real Anthropic SSE (key on Ubuntu `.env`) |
+| P2 | `npm run verify:cross-repo-live` | Ubuntu — gateway ingest (`API_PROXY_BASE_URL`) |
+
 ```bash
-npm run verify        # build + unit tests (campaign lib)
-npm run verify:full   # + smoke-test against running server
+npm run verify:func          # preferred on macOS (avoid local next build OOM)
+SMOKE_TEST_URL=http://127.0.0.1:3010 npm run verify:e2e-real   # on Ubuntu
 ```
+
+Deploy: [deploy-ubuntu.md](./deploy-ubuntu.md) · invest-ai [ubuntu-production-deploy](https://github.com/lqjack/dataproaiset/blob/main/docs/operations/ubuntu-production-deploy.md).
 
 Issues and gaps: [issue.md](./issue.md) · [todo.md](./todo.md).
 

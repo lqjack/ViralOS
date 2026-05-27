@@ -8,22 +8,26 @@ function mockClient() {
     messages: {
       create: async () => {
         call += 1
+        const usage = { input_tokens: 100, output_tokens: 50 }
         if (call === 1) {
           return {
             content: [{
               text: '{"persona":{"name":"Alex","age":"28","traits":["busy"],"painPoint":"time"},"emotionalDrivers":["convenience"],"competitorGap":"price"}'
-            }]
+            }],
+            usage
           }
         }
         if (call === 2) {
           return {
-            content: [{ text: '{"twitter":{"hook":"Hello world","thread":["t1"],"hashtags":["#test"]}}' }]
+            content: [{ text: '{"twitter":{"hook":"Hello world","thread":["t1"],"hashtags":["#test"]}}' }],
+            usage
           }
         }
         return {
           content: [{
             text: '{"viralScore":82,"scoreBreakdown":{"hook":80,"shareability":85,"emotion":81},"growthStrategy":"post early","boostTips":["use video"],"timing":{"best_days":["Tue"],"best_hours":"9am"}}'
-          }]
+          }],
+          usage
         }
       }
     }
@@ -41,7 +45,7 @@ test('streamCampaign emits agent lifecycle and complete event', async () => {
   await streamCampaign(
     { product: 'Test Product', tone: 'viral', platforms: ['twitter'] },
     (event) => events.push(event),
-    { createClient: mockClient }
+    { createClient: mockClient, requireRealUsage: false }
   )
 
   assert.equal(events.filter((e) => e.type === 'agent_start').length, 4)
@@ -74,7 +78,7 @@ test('streamCampaign stops on validation failure', async () => {
   await streamCampaign(
     { product: 'Bad', platforms: ['twitter'] },
     (event) => events.push(event),
-    { createClient: badClient }
+    { createClient: badClient, requireRealUsage: false }
   )
 
   assert.ok(events.some((e) => e.type === 'error'))

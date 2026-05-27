@@ -91,6 +91,18 @@ function CampaignResult({ result }) {
           <h3 style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Persona</h3>
           <p><strong>{result.persona.name}</strong> · {result.persona.age}</p>
           <p style={{ color: '#555' }}>{result.persona.painPoint}</p>
+          {Array.isArray(result.emotionalDrivers) && result.emotionalDrivers.length > 0 && (
+            <p style={{ marginTop: '0.5rem', color: '#555' }}>
+              Drivers: {result.emotionalDrivers.join(' · ')}
+            </p>
+          )}
+        </section>
+      )}
+
+      {result.competitorGap && (
+        <section>
+          <h3 style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Competitor gap</h3>
+          <p style={{ lineHeight: 1.6, color: '#444' }}>{result.competitorGap}</p>
         </section>
       )}
 
@@ -127,6 +139,14 @@ function CampaignResult({ result }) {
               ))}
             </ul>
           )}
+          {result.timing && (
+            <div style={{ marginTop: '0.75rem', fontSize: '0.9rem', color: '#555' }}>
+              {result.timing.best_days?.length > 0 && (
+                <p>Best days: {result.timing.best_days.join(', ')}</p>
+              )}
+              {result.timing.best_hours && <p>Best hours: {result.timing.best_hours}</p>}
+            </div>
+          )}
         </section>
       )}
 
@@ -157,6 +177,7 @@ export default function CampaignPage() {
   const [events, setEvents] = useState([])
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
+  const [ingestNotice, setIngestNotice] = useState('')
   const [loading, setLoading] = useState(false)
 
   const agentSteps = useMemo(() => buildAgentSteps(events), [events])
@@ -166,6 +187,7 @@ export default function CampaignPage() {
     setEvents([])
     setResult(null)
     setError('')
+    setIngestNotice('')
 
     try {
       const response = await fetch('/api/campaign', {
@@ -201,6 +223,12 @@ export default function CampaignPage() {
           setEvents((prev) => [...prev, ...parsed.events])
           for (const payload of parsed.events) {
             if (payload.type === 'complete') setResult(payload.result)
+            if (payload.type === 'ingest_done') {
+              setIngestNotice(`Saved to gateway: ${payload.ingest?.id || payload.ingest?.path || 'ok'}`)
+            }
+            if (payload.type === 'ingest_error') {
+              setIngestNotice(`Gateway ingest failed: ${payload.message}`)
+            }
             if (payload.type === 'error') throw new Error(payload.message)
           }
         }
@@ -331,6 +359,19 @@ export default function CampaignPage() {
           </div>
         )}
 
+        {ingestNotice && (
+          <div style={{
+            marginTop: '1.5rem',
+            padding: '0.75rem 1rem',
+            backgroundColor: '#f0fdf4',
+            border: '1px solid #86efac',
+            borderRadius: '0.5rem',
+            fontSize: '0.9rem'
+          }}>
+            {ingestNotice}
+          </div>
+        )}
+
         {result && (
           <div style={{ marginTop: '2rem' }}>
             <div style={{
@@ -358,6 +399,19 @@ export default function CampaignPage() {
               </button>
             </div>
             <CampaignResult result={result} />
+            {ingestNotice && (
+              <p style={{
+                marginTop: '1rem',
+                padding: '0.75rem 1rem',
+                borderRadius: '0.5rem',
+                backgroundColor: ingestNotice.startsWith('Saved') ? '#f0fdf4' : '#fffbeb',
+                border: `1px solid ${ingestNotice.startsWith('Saved') ? '#86efac' : '#fcd34d'}`,
+                fontSize: '0.9rem',
+                color: '#374151'
+              }}>
+                {ingestNotice}
+              </p>
+            )}
           </div>
         )}
       </main>

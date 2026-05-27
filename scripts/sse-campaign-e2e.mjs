@@ -1,5 +1,6 @@
 import { readSseEventsFromResponse } from '../lib/sse-parse.js'
 import { validateCompleteResult } from '../lib/campaign-validate.js'
+import { assertNoMockContent, assertRealCampaignUsage } from '../lib/real-ai-guard.js'
 
 export async function postCampaignAndCollectEvents(baseUrl, body, { apiKey } = {}) {
   const headers = { 'Content-Type': 'application/json' }
@@ -62,10 +63,8 @@ export function assertCampaignE2eEvents(events, { requireUsage = false } = {}) {
   if (!check.ok) throw new Error(`Invalid complete.result: ${check.reason}`)
 
   if (requireUsage) {
-    const usage = complete.result.usage
-    if (!usage?.marketAnalyst?.input_tokens && !usage?.marketAnalyst?.output_tokens) {
-      throw new Error('Expected real API usage metadata on complete.result.usage')
-    }
+    assertRealCampaignUsage(complete.result.usage)
+    assertNoMockContent(complete.result, 'complete.result')
   }
 
   return complete.result

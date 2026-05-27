@@ -1,4 +1,5 @@
 import { CAMPAIGN_API_INFO, streamCampaign } from '../../lib/campaign'
+import { ingestCampaignIfConfigured } from '../../lib/campaign-ingest.js'
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -30,12 +31,27 @@ export default async function handler(req, res) {
     'Access-Control-Allow-Origin': '*'
   })
 
+  let completeResult = null
+
   const send = (data) => {
     res.write(`data: ${JSON.stringify(data)}\n\n`)
+    if (data.type === 'complete') {
+      completeResult = data.result
+    }
   }
 
   try {
     await streamCampaign({ product, description, audience, tone, platforms }, send)
+    if (completeResult) {
+      try {
+        const ingest = await ingestCampaignIfConfigured(completeResult)
+        if (ingest) {
+          send({ type: 'ingest_done', ingest })
+        }
+      } catch (ingestError) {
+        send({ type: 'ingest_error', message: ingestError.message })
+      }
+    }
   } catch (error) {
     send({ type: 'error', message: error.message })
   } finally {

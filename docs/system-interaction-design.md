@@ -138,6 +138,8 @@ All events are JSON objects on `data:` lines.
 | `agent_start` | Before agent LLM call | `agent`, `name` |
 | `agent_done` | After agent completes | `agent`, `data` (parsed JSON or parse error) |
 | `complete` | Pipeline finished | `result` (aggregated campaign package) |
+| `ingest_done` | Optional: campaign saved to invest-ai gateway | `ingest` (`id`, `path`, …) when `API_PROXY_BASE_URL` set |
+| `ingest_error` | Optional: gateway ingest failed | `message` (pipeline `complete` still sent) |
 | `error` | Uncaught exception in handler | `message` |
 
 ### 5.1 `complete.result` shape
