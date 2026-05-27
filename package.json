@@ -30,6 +30,7 @@
     "deploy:ubuntu:sync": "./scripts/deploy-ubuntu-sync.sh",
     "verify:ubuntu:all": "./scripts/ubuntu/verify-all-on-ubuntu.sh",
     "verify:local-design": "node scripts/verify-local-design.mjs",
+    "verify:lan-resume": "./scripts/ubuntu/verify-lan-resume.sh",
     "verify:all": "npm run verify:local-design"
   },
   "dependencies": {

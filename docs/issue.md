@@ -5,7 +5,7 @@
 **Reported:** 2026-05-22  
 **Last reviewed:** 2026-05-27 (retro + issue/todo sync)  
 **Last updated:** 2026-05-27  
-**Code HEAD:** `dcacb71`
+**Code HEAD:** `7403979`
 
 ---
 
@@ -38,8 +38,8 @@ The May 2026 deploy incident was a **symptom**, not the root strategic issue. In
 | ID | Issue | Impact | Mitigation |
 |----|--------|--------|------------|
 | **OPS-1** | **Ubuntu deploy + real E2E not signed off** | Cannot claim production-ready until `verify:ubuntu:all` on host | **Deferred off-LAN.** On LAN: `deploy:ubuntu:sync` → `verify:ubuntu:all` |
-| **OPS-2** | **macOS insufficient CPU/RAM** for full `next build` / long LLM runs | Local `verify:full` / `verify:e2e-real` OOM or timeout | Use `npm run verify:func` on Mac; build + real E2E **only on Ubuntu** ([deploy-ubuntu.md](./deploy-ubuntu.md)) |
-| **OPS-3** | **SSH / tunnel to Ubuntu** may be down (`frpc`, cloudflared linux connector) | `deploy:ubuntu:sync` fails from Mac over public internet | **Wait for LAN** or console; then `recover:remote-ssh` — see [cloudflared-tunnel-stability](https://github.com/lqjack/dataproaiset/blob/main/docs/operations/cloudflared-tunnel-stability.md) |
+| **OPS-2** | **macOS insufficient CPU/RAM** for full `next build` / long LLM runs | Local `verify:full` / `verify:e2e-real` OOM or timeout | `npm run verify:local-design` or `verify:func` on Mac; `verify:full` on CI/Ubuntu ([deploy-ubuntu.md](./deploy-ubuntu.md)) |
+| **OPS-3** | **SSH / tunnel to Ubuntu** may be down (`frpc`, cloudflared linux connector) | `deploy:ubuntu:sync` fails from Mac over public internet | **Now:** `npm run verify:local-design`. **LAN/console:** `recover:remote-ssh` — [cloudflared-tunnel-stability](https://github.com/lqjack/dataproaiset/blob/main/docs/operations/cloudflared-tunnel-stability.md) |
 | **OPS-4** | **`API_PROXY_BASE_URL` on Vercel** cannot reach LAN `:8001` | Proxy routes + auto-ingest fail on public deploy | Campaign LLM still works via `ANTHROPIC_API_KEY`; set proxy only when invest-ai gateway is **publicly reachable** (dedicated tunnel hostname → `:8001`, not `gateway.datapro.asia` :3000) |
 | **OPS-5** | **Hostname confusion** `gateway.datapro.asia` vs invest-ai gateway | Wrong proxy target | `gateway.datapro.asia` → llm-gateway **:3000**; ViralOS proxy/ingest → invest-ai **:8001** (`http://127.0.0.1:8001` on Ubuntu, `http://192.168.1.4:8001` from LAN) |
 
@@ -47,8 +47,9 @@ The May 2026 deploy incident was a **symptom**, not the root strategic issue. In
 
 | Priority | Item | Owner |
 |----------|------|--------|
-| P3 | Ubuntu: `verify:ubuntu:all` + `verify:e2e-real` with live `ANTHROPIC_API_KEY` | Operator |
-| P3 | Ubuntu: invest-ai `start-core-gateway.sh` + `verify:cross-repo-live` | Operator |
+| P3 *(LAN only)* | Ubuntu: `verify:ubuntu:all` + `verify:e2e-real` with live `ANTHROPIC_API_KEY` | Operator |
+| P3 *(LAN only)* | Ubuntu: invest-ai `start-core-gateway.sh` + `verify:cross-repo-live` | Operator |
+| P3 | Off-LAN now: `npm run verify:local-design` (func + optional CLI LLM) | Dev |
 | P3 | Vercel project env: `ANTHROPIC_API_KEY` (required); `API_PROXY_BASE_URL` only if public :8001 | Operator |
 | P4 | Optional: Cloudflare ingress for invest-ai `:8001` (Vercel proxy + ingest from internet) | Infra |
 | P4 | `examples/basic-campaign.js` align with `streamCampaign` / document as CLI alternative | Dev |
@@ -134,6 +135,7 @@ The May 2026 deploy incident was a **symptom**, not the root strategic issue. In
 |------|--------|-------|
 | `npm run verify:no-mock` | PASS | `lib/`, `pages/`, `.next/` scan |
 | `npm run verify:func` | **24/24** | incl. gateway + SSE contract tests |
+| `npm run verify:local-design` | func + optional CLI LLM | use when OPS-3 blocks Ubuntu |
 | `npm run verify:full` | build + **10/10** smoke | after `npm run build` |
 | `verify:ubuntu:all` | **Not run** | blocked by OPS-1 / OPS-3 |
 | `verify:cross-repo-live` | **Not run** | blocked by gateway + OPS-1 |

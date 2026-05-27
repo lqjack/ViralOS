@@ -6,7 +6,7 @@
 
 **Shipped summary:** [SHIPPED.md](./SHIPPED.md) · **Design traceability:** [implementation-map.md](./implementation-map.md)
 
-**Code HEAD:** `dcacb71`
+**Code HEAD:** see `git log -1` on `main`
 
 ---
 
@@ -24,16 +24,16 @@
 
 ---
 
-## P3 — Operator verification (OPEN)
+## P3 — Operator verification (OPEN · LAN-deferred)
 
-> Application code for the shipped design is **complete**. These items require a reachable **Ubuntu** host. Full context: [issue.md Part G](./issue.md#part-g--open-issues--operator-backlog-2026-05-27).
+> **LAN deferral (2026-05-27):** Ubuntu deploy/E2E paused until same-LAN or console access. **Until then:** `npm run verify:local-design` on macOS.
 
 | ID | Task | Command / action |
 |----|------|------------------|
 | **OPS-1** | Deploy ViralOS on Ubuntu | `npm run deploy:ubuntu:sync` (Mac) or `./scripts/ubuntu/deploy-viralos.sh` (host) |
 | **OPS-1** | Sign off real LLM E2E | `ANTHROPIC_API_KEY` in `~/ViralOS/.env` → `npm run verify:ubuntu:all` |
-| **OPS-2** | Do not rely on Mac for full build | Use `npm run verify:func` on Mac; `verify:full` on CI or Ubuntu |
-| **OPS-3** | Fix SSH if sync fails | Ubuntu: `cd ~/llm-gateway && bun run recover:remote-ssh` |
+| **OPS-2** | Do not rely on Mac for full build | `verify:func` or `verify:local-design` on Mac; `verify:full` on CI/Ubuntu |
+| **OPS-3** | Fix SSH if sync fails | **Now:** `npm run verify:local-design`. **LAN:** `recover:remote-ssh` then `deploy:ubuntu:sync` |
 | **OPS-4** | Vercel env | Set `ANTHROPIC_API_KEY` (required). `API_PROXY_BASE_URL` only if `:8001` is public |
 | **OPS-5** | Correct proxy target | Ubuntu/LAN: `http://127.0.0.1:8001` or `http://192.168.1.4:8001` — not `gateway.datapro.asia:3000` |
 | — | Start invest-ai gateway | `~/dataproaiset/dataproaiset/scripts/ubuntu/start-core-gateway.sh` |
@@ -43,17 +43,28 @@ Checklist:
 
 - [ ] **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
 - [ ] **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
-- [ ] **OPS-3** SSH/tunnel stable (if sync fails, recover first)
+- [ ] **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
 - [ ] invest-ai gateway running on `:8001`
 - [ ] `verify:cross-repo-live` passes on Ubuntu
 - [ ] **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
+
+**LAN resume:** [lan-resume-checklist.md](./lan-resume-checklist.md) · `npm run verify:lan-resume`
+
+---
+
+## P2 — Local design (off-LAN) ✅
+
+- [x] `examples/basic-campaign.js` + `npm run demo` (real `streamCampaign`)
+- [x] `npm run verify:local-design` / `verify:all` (default gate)
+- [x] [lan-resume-checklist.md](./lan-resume-checklist.md) for post-LAN ops
 
 ---
 
 ## P4 — Optional enhancements (backlog)
 
 - [ ] Public Cloudflare ingress for invest-ai gateway `:8001` (enables Vercel proxy + auto-ingest from internet)
-- [ ] Align or deprecate `examples/basic-campaign.js` vs `lib/campaign.js` pipeline
+- [x] `examples/basic-campaign.js` wired to `streamCampaign` (used by `verify:local-design` CLI path)
+- [ ] Document CLI vs HTTP API in README examples section
 - [ ] NeuraDesk MCP plugin for campaigns (llm-gateway stub; cross-repo Phase 2+)
 - [ ] Persistent campaign history DB (out of current design scope)
 
@@ -123,7 +134,10 @@ Checklist:
 ## Verification checklist
 
 ```bash
-# macOS — lightweight (no full build)
+# macOS — off-LAN default (no Ubuntu, no full build)
+npm run verify:local-design  # verify:func + optional CLI real LLM
+
+# macOS — unit tests only
 npm run verify:func          # 24/24 + no-mock
 
 # macOS / CI — full
@@ -140,6 +154,7 @@ API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live
 | Gate | Last run (2026-05-27) | Where |
 |------|------------------------|-------|
 | `verify:func` | **24/24** PASS | macOS |
+| `verify:local-design` | func PASS; CLI LLM if key set | macOS (OPS-3 workaround) |
 | `verify:full` | **10/10** smoke (after build) | macOS / CI |
 | `verify:ubuntu:all` | Not run | Ubuntu — **P3** |
 | `verify:cross-repo-live` | Not run | Ubuntu + gateway — **P3** |

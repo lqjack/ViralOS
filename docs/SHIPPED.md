@@ -1,6 +1,6 @@
 # ViralOS — Shipped Implementation Status
 
-> **HEAD**: `dcacb71` · **Product**: viral campaign generator (not Cognitive OS vision)  
+> **HEAD**: `7403979+` · **Product**: viral campaign generator (not Cognitive OS vision)  
 > **Retro:** [issue.md § Part H](./issue.md#part-h--engineering-retrospective-2026-05-27)
 
 ## Summary
@@ -31,9 +31,11 @@ What remains is **operator work on Ubuntu** (deploy + real API key), not missing
 
 | Step | Where | Command |
 |------|-------|---------|
+| 0 | macOS (off-LAN) | `npm run verify:local-design` or `verify:all` |
 | 1 | macOS / CI | `npm run verify:func` (**24/24**) |
 | 2 | macOS / CI | `npm run verify:full` (smoke **10/10**) |
-| 3 | Ubuntu deploy | `npm run deploy:ubuntu:sync` |
+| 2b | LAN prep | `npm run verify:lan-resume` → [lan-resume-checklist.md](./lan-resume-checklist.md) |
+| 3 | Ubuntu deploy | `npm run deploy:ubuntu:sync` *(LAN)* |
 | 4 | Ubuntu | `npm run verify:ubuntu:all` |
 | 5 | Ubuntu + gateway | `API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live` |
 

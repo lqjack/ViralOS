@@ -29,6 +29,7 @@
 | Doc | Purpose |
 |-----|---------|
 | [deploy-ubuntu.md](./deploy-ubuntu.md) | Build/run on Ubuntu `:3010`, real E2E, rsync from macOS |
+| [lan-resume-checklist.md](./lan-resume-checklist.md) | **Off-LAN now / LAN later** — ops sign-off steps |
 
 ### Shipped product — system design trilogy
 

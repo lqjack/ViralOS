@@ -225,7 +225,22 @@ const campaign = await director.run()
 
 ---
 
+## ✅ Verify locally (off-LAN — no Ubuntu SSH required)
+
+Shipped design implementation can be verified on macOS while remote Ubuntu ops are deferred:
+
+```bash
+npm run verify:local-design   # no-mock + 24 unit tests + optional CLI real LLM
+npm run demo                  # ANTHROPIC_API_KEY=... node examples/basic-campaign.js
+```
+
+When back on the same LAN as Ubuntu, see [docs/lan-resume-checklist.md](./docs/lan-resume-checklist.md) and `npm run verify:lan-resume`.
+
+---
+
 ## 🖥️ Deploy on Ubuntu (recommended — avoids macOS OOM)
+
+> **Paused off-LAN** if cross-public-network SSH fails — use verification above until `192.168.1.4` is reachable.
 
 Build and run on your Ubuntu server (`PORT=3010` by default):
 
