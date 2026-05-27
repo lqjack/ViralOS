@@ -18,6 +18,8 @@
 
 **Issue & gap analysis:** [issue.md](./issue.md) · **Tasks:** [todo.md](./todo.md)
 
+**English / canonical Cognitive OS summary:** [COGNITIVE-OS-EN.md](./COGNITIVE-OS-EN.md) · [cognitive-os-mvp-canonical.md](./cognitive-os-mvp-canonical.md)
+
 ---
 
 ## Reading order (Cognitive OS vision)

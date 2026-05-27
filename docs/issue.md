@@ -230,7 +230,7 @@ Infrastructure fixes are complete. ViralOS campaign path (`/` → `/campaign` �
 Completed:
 
 1. [x] `docs/README.md` — index, product boundary, status column (vision / spec / deferred)
-2. [x] Each doc tagged with **Product:** Cognitive OS and **Implements:** none | partial | N/A
+2. [x] Doc status via `docs/README.md` table + frontmatter on canonical English docs
 3. [x] Cross-links to implemented surfaces: `/campaign`, `/api/campaign`, `lib/campaign.js`
 4. [x] Gap appendix in `docs/README.md` pointing to this `issue.md` section C
 5. [x] Stack docs labeled as target architecture (deferred); shipped stack documented in README
@@ -259,8 +259,8 @@ Completed:
 ### P2 — docs hygiene
 
 - [x] `docs/README.md` index
-- [ ] Dedupe hci-mvp / hci-mcp-target / hci-abstract into one canonical MVP spec (deferred)
-- [ ] English or bilingual summary for international contributors (deferred)
+- [x] Dedupe hci-mvp / hci-mcp-target / hci-abstract → `docs/cognitive-os-mvp-canonical.md`
+- [x] English summary → `docs/COGNITIVE-OS-EN.md`
 
 ---
 
@@ -308,4 +308,4 @@ npm run build && npm run start &
 ANTHROPIC_API_KEY= npm run smoke-test        # 8/8 expected
 ```
 
-**Resolution commit:** `44e6c03` — Fix Vercel deploy, ViralOS-first docs, tests, Next.js 14.2.35
+**Resolution commits:** `44e6c03` (deploy/API/docs) · `4fbf599` (verify:full + ESM)

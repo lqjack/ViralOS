@@ -25,8 +25,8 @@
 - [x] `docs/README.md` index with status column
 - [x] `docs/issue.md` canonical issue + gap analysis
 - [x] Cross-link shipped code (`/campaign`, `/api/campaign`, `lib/campaign.js`)
-- [ ] Dedupe hci-mvp / hci-mcp-target / hci-abstract → single canonical MVP spec (deferred)
-- [ ] Bilingual summary for international contributors (deferred)
+- [x] Dedupe hci-mvp / hci-mcp-target / hci-abstract → [cognitive-os-mvp-canonical.md](./cognitive-os-mvp-canonical.md)
+- [x] English summary for international contributors → [COGNITIVE-OS-EN.md](./COGNITIVE-OS-EN.md)
 
 ## Infrastructure (from Part A — closed)
 
