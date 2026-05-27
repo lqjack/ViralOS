@@ -18,6 +18,8 @@
 
 **Issue & gap analysis:** [issue.md](./issue.md) · **Tasks:** [todo.md](./todo.md)
 
+**Cross-repo planning (invest-ai · llm-gateway · viralos):** [cross-repo-reuse-and-roadmap.md](./cross-repo-reuse-and-roadmap.md) (canonical matrix in invest-ai `docs/architecture/`)
+
 **English / canonical Cognitive OS summary:** [COGNITIVE-OS-EN.md](./COGNITIVE-OS-EN.md) · [cognitive-os-mvp-canonical.md](./cognitive-os-mvp-canonical.md)
 
 ---
