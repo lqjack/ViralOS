@@ -16,7 +16,7 @@ Three separate problems were folded into one repo:
 |-------|---------|--------|
 | **Infrastructure** | Wrong `vercel.json`, API in `/api/` not `/pages/api/`, App Router syntax in Pages Router | **Resolved** (2026-05-27) |
 | **Product identity** | README/code ship **ViralOS**; `docs/` = Cognitive OS vision archive | **Resolved** — ViralOS-first (2026-05-27) |
-| **Documentation** | 17 design docs without index or code links | **Resolved** — `docs/README.md`, `docs/todo.md`, this file |
+| **Documentation** | 17 design docs without index or code links | **Resolved** — `docs/README.md`, design trilogy ([DESIGN.md](./DESIGN.md)), `docs/todo.md`, this file |
 
 The May 2026 deploy incident was a **symptom**, not the root strategic issue. Inherited `dataproai-set` Vercel config and proxy tunnels suggest the repo absorbed artifacts from prior projects (dataproai, Cognitive OS, ViralOS) without a single product boundary or docs-to-code traceability gate.
 
@@ -64,6 +64,14 @@ ViralOS failed to deploy and serve API endpoints on Vercel. Root causes: inherit
 | Landing CTA → `/campaign` | `pages/index.js` |
 | README aligned to Pages Router reality | `README.md` |
 | Smoke tests + GitHub Actions | `scripts/smoke-test.mjs`, `.github/workflows/ci.yml` |
+
+### Phase 4 — System design trilogy (2026-05-27)
+
+| Change | File(s) |
+|--------|---------|
+| Design index + architecture / interaction / control-flow docs | `docs/DESIGN.md`, `docs/system-design-*.md`, `docs/system-control-data-flow.md` |
+| README + doc index + cross-repo links | `README.md`, `docs/README.md`, `docs/cross-repo-reuse-and-roadmap.md`, `docs/todo.md` |
+| Campaign engine aligned to documented pipeline (validation, exports) | `lib/campaign.js`, `lib/campaign-validate.js`, `lib/sse-parse.js` |
 
 ## Deployment Acceptance Criteria
 

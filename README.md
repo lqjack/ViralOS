@@ -100,6 +100,8 @@ Copy `.env.example` to `.env.local` for local development.
 
 ## 🏗️ Architecture
 
+**System design docs:** [docs/DESIGN.md](./docs/DESIGN.md) — architecture · interaction · control/data flow ([docs/README.md](./docs/README.md)).
+
 ```
                     ViralOS
                        │
@@ -238,13 +240,25 @@ After deploy, open `/campaign` to generate a campaign from the browser.
 
 ## 📚 Relationship to `docs/`
 
-This repo ships **ViralOS** (viral marketing campaigns). The `docs/` folder contains **Personal Cognitive OS** design documents — a separate vision (WeChat life reports, cognitive mirror) that is **not implemented** here.
+This repo ships **ViralOS** (viral marketing campaigns). The `docs/` folder also holds **Personal Cognitive OS** vision material (WeChat HCI) — **not implemented** in this codebase.
+
+### Shipped product — system design (read first)
+
+| Document | Purpose |
+|----------|---------|
+| [docs/DESIGN.md](./docs/DESIGN.md) | Design index — layers, flows, links |
+| [docs/system-design-architecture.md](./docs/system-design-architecture.md) | System architecture — components, deployment, boundaries |
+| [docs/system-interaction-design.md](./docs/system-interaction-design.md) | Interaction design — journeys, API/SSE contracts |
+| [docs/system-control-data-flow.md](./docs/system-control-data-flow.md) | Control & data flow — 3-agent pipeline, SSE bus |
+
+### Ops & vision
 
 | Resource | Purpose |
 |----------|---------|
-| [docs/README.md](./docs/README.md) | Documentation index + product boundary |
-| [docs/issue.md](./docs/issue.md) | Deploy incident retro, gap analysis, resolution |
+| [docs/README.md](./docs/README.md) | Full documentation index + product boundary |
+| [docs/issue.md](./docs/issue.md) | Deploy retro, gap analysis |
 | [docs/todo.md](./docs/todo.md) | Task tracker |
+| [docs/cross-repo-reuse-and-roadmap.md](./docs/cross-repo-reuse-and-roadmap.md) | invest-ai · llm-gateway · ViralOS reuse plan |
 
 **Shipped today:** `/campaign` UI · `POST /api/campaign` SSE API · `lib/campaign.js`
 

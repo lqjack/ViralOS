@@ -17,9 +17,11 @@
     "demo": "node examples/basic-campaign.js",
     "smoke-test": "node scripts/smoke-test.mjs",
     "smoke-test:ci": "node scripts/smoke-with-server.mjs",
-    "test": "node --test scripts/campaign-lib.test.mjs",
+    "test": "node --test scripts/campaign-lib.test.mjs scripts/campaign-validate.test.mjs scripts/sse-parse.test.mjs",
     "verify": "npm run build && npm run test",
-    "verify:full": "npm run verify && npm run smoke-test:ci"
+    "verify:full": "npm run verify && npm run smoke-test:ci",
+    "verify:e2e-real": "node scripts/verify-e2e-real.mjs",
+    "verify:all": "npm run verify:full && npm run verify:e2e-real"
   },
   "dependencies": {
     "next": "14.2.35",

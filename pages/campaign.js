@@ -1,5 +1,7 @@
 import Head from 'next/head'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { buildAgentSteps } from '../lib/campaign-ui-state.js'
+import { parseSseBuffer } from '../lib/sse-parse.js'
 
 const buttonStyle = {
   padding: '0.75rem 1.5rem',
@@ -19,6 +21,133 @@ const inputStyle = {
   fontSize: '1rem'
 }
 
+const statusColors = {
+  pending: { bg: '#f9fafb', border: '#e5e7eb', dot: '#9ca3af' },
+  running: { bg: '#eff6ff', border: '#93c5fd', dot: '#2563eb' },
+  done: { bg: '#f0fdf4', border: '#86efac', dot: '#16a34a' },
+  error: { bg: '#fef2f2', border: '#fca5a5', dot: '#dc2626' }
+}
+
+function AgentStepper({ steps }) {
+  return (
+    <div style={{ display: 'grid', gap: '0.75rem' }}>
+      {steps.map((step) => {
+        const colors = statusColors[step.status] || statusColors.pending
+        return (
+          <div
+            key={step.id}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.75rem 1rem',
+              backgroundColor: colors.bg,
+              border: `1px solid ${colors.border}`,
+              borderRadius: '0.5rem'
+            }}
+          >
+            <span style={{
+              width: '10px',
+              height: '10px',
+              borderRadius: '50%',
+              backgroundColor: colors.dot,
+              flexShrink: 0
+            }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 600 }}>{step.name}</div>
+              <div style={{ fontSize: '0.875rem', color: '#666', textTransform: 'capitalize' }}>
+                {step.status}
+                {step.validation && !step.validation.ok ? ` — ${step.validation.reason}` : ''}
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function CampaignResult({ result }) {
+  if (!result) return null
+  const platforms = Object.keys(result.content || {})
+
+  return (
+    <div style={{ display: 'grid', gap: '1.5rem' }}>
+      {result.viralScore != null && (
+        <div style={{
+          padding: '1.25rem',
+          backgroundColor: '#111',
+          color: '#fff',
+          borderRadius: '0.5rem',
+          fontSize: '1.5rem',
+          fontWeight: 700
+        }}>
+          Viral Score™ {result.viralScore}
+        </div>
+      )}
+
+      {result.persona && (
+        <section>
+          <h3 style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Persona</h3>
+          <p><strong>{result.persona.name}</strong> · {result.persona.age}</p>
+          <p style={{ color: '#555' }}>{result.persona.painPoint}</p>
+        </section>
+      )}
+
+      {platforms.length > 0 && (
+        <section>
+          <h3 style={{ fontWeight: 600, marginBottom: '0.75rem' }}>Platform content</h3>
+          {platforms.map((platform) => (
+            <details key={platform} style={{ marginBottom: '0.5rem' }}>
+              <summary style={{ cursor: 'pointer', fontWeight: 500 }}>{platform}</summary>
+              <pre style={{
+                marginTop: '0.5rem',
+                backgroundColor: '#f5f5f5',
+                padding: '1rem',
+                borderRadius: '0.375rem',
+                overflowX: 'auto',
+                whiteSpace: 'pre-wrap',
+                fontSize: '0.875rem'
+              }}>
+                {JSON.stringify(result.content[platform], null, 2)}
+              </pre>
+            </details>
+          ))}
+        </section>
+      )}
+
+      {result.growthStrategy && (
+        <section>
+          <h3 style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Growth strategy</h3>
+          <p style={{ lineHeight: 1.6 }}>{result.growthStrategy}</p>
+          {Array.isArray(result.boostTips) && result.boostTips.length > 0 && (
+            <ul style={{ marginTop: '0.5rem', paddingLeft: '1.25rem' }}>
+              {result.boostTips.map((tip) => (
+                <li key={tip} style={{ marginBottom: '0.25rem' }}>{tip}</li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      <details>
+        <summary style={{ cursor: 'pointer', color: '#666' }}>Raw JSON</summary>
+        <pre style={{
+          marginTop: '0.5rem',
+          backgroundColor: '#f5f5f5',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          overflowX: 'auto',
+          whiteSpace: 'pre-wrap',
+          fontSize: '0.75rem'
+        }}>
+          {JSON.stringify(result, null, 2)}
+        </pre>
+      </details>
+    </div>
+  )
+}
+
 export default function CampaignPage() {
   const [product, setProduct] = useState('Portable Espresso Machine')
   const [description, setDescription] = useState('Barista-quality coffee anywhere, under 2 minutes')
@@ -29,6 +158,8 @@ export default function CampaignPage() {
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const agentSteps = useMemo(() => buildAgentSteps(events), [events])
 
   const handleGenerate = async () => {
     setLoading(true)
@@ -63,21 +194,14 @@ export default function CampaignPage() {
         if (done) break
 
         buffer += decoder.decode(value, { stream: true })
-        const chunks = buffer.split('\n\n')
-        buffer = chunks.pop() || ''
+        const parsed = parseSseBuffer(buffer)
+        buffer = parsed.remainder
 
-        for (const chunk of chunks) {
-          const line = chunk.trim()
-          if (!line.startsWith('data:')) continue
-
-          const payload = JSON.parse(line.slice(5).trim())
-          setEvents((prev) => [...prev, payload])
-
-          if (payload.type === 'complete') {
-            setResult(payload.result)
-          }
-          if (payload.type === 'error') {
-            throw new Error(payload.message)
+        if (parsed.events.length > 0) {
+          setEvents((prev) => [...prev, ...parsed.events])
+          for (const payload of parsed.events) {
+            if (payload.type === 'complete') setResult(payload.result)
+            if (payload.type === 'error') throw new Error(payload.message)
           }
         }
       }
@@ -86,6 +210,17 @@ export default function CampaignPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const downloadJson = () => {
+    if (!result) return
+    const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `viralos-campaign-${Date.now()}.json`
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   return (
@@ -104,7 +239,8 @@ export default function CampaignPage() {
           Generate Campaign
         </h1>
         <p style={{ color: '#666', marginBottom: '2rem' }}>
-          Three AI agents stream progress in real time. Requires <code>ANTHROPIC_API_KEY</code>.
+          Four agents (3 LLM + Campaign Director) stream progress in real time. Requires{' '}
+          <code>ANTHROPIC_API_KEY</code>.
         </p>
 
         <div style={{ display: 'grid', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -186,43 +322,42 @@ export default function CampaignPage() {
           </div>
         )}
 
-        {events.length > 0 && (
+        {(loading || events.length > 0) && (
           <div style={{ marginTop: '2rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>Agent Progress</h2>
-            <div style={{ display: 'grid', gap: '0.75rem' }}>
-              {events.map((event, index) => (
-                <div
-                  key={`${event.type}-${event.agent || index}`}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '0.5rem',
-                    border: '1px solid #eee'
-                  }}
-                >
-                  <strong>{event.type}</strong>
-                  {event.name ? ` — ${event.name}` : ''}
-                  {event.agent ? ` (${event.agent})` : ''}
-                </div>
-              ))}
-            </div>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
+              Agent pipeline
+            </h2>
+            <AgentStepper steps={agentSteps} />
           </div>
         )}
 
         {result && (
           <div style={{ marginTop: '2rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
-              Campaign Result {result.viralScore != null ? `(Viral Score: ${result.viralScore})` : ''}
-            </h2>
-            <pre style={{
-              backgroundColor: '#f5f5f5',
-              padding: '1.5rem',
-              borderRadius: '0.5rem',
-              overflowX: 'auto',
-              whiteSpace: 'pre-wrap'
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem',
+              flexWrap: 'wrap',
+              gap: '0.75rem'
             }}>
-              {JSON.stringify(result, null, 2)}
-            </pre>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
+                Campaign package
+              </h2>
+              <button
+                type="button"
+                onClick={downloadJson}
+                style={{
+                  ...buttonStyle,
+                  backgroundColor: '#fff',
+                  color: '#111',
+                  border: '1px solid #ddd'
+                }}
+              >
+                Export JSON
+              </button>
+            </div>
+            <CampaignResult result={result} />
           </div>
         )}
       </main>

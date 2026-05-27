@@ -30,5 +30,15 @@ See [README.md](./README.md) — **Cognitive OS** docs in `docs/hci-*` are visio
 
 ## Local docs
 
+### Shipped ViralOS design trilogy
+
+- [DESIGN.md](./DESIGN.md) — index  
+- [system-design-architecture.md](./system-design-architecture.md)  
+- [system-interaction-design.md](./system-interaction-design.md)  
+- [system-control-data-flow.md](./system-control-data-flow.md)  
+
+### Ops & vision
+
+- [README.md](./README.md) — doc index  
 - [issue.md](./issue.md) — retro  
 - [todo.md](./todo.md) — tasks  

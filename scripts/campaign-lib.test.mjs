@@ -44,12 +44,39 @@ test('streamCampaign emits agent lifecycle and complete event', async () => {
     { createClient: mockClient }
   )
 
-  assert.equal(events.filter((e) => e.type === 'agent_start').length, 3)
-  assert.equal(events.filter((e) => e.type === 'agent_done').length, 3)
+  assert.equal(events.filter((e) => e.type === 'agent_start').length, 4)
+  assert.equal(events.filter((e) => e.type === 'agent_done').length, 4)
+
+  const director = events.find((e) => e.agent === 'campaignDirector' && e.type === 'agent_done')
+  assert.ok(director)
+  assert.equal(director.data.status, 'packaged')
 
   const complete = events.find((e) => e.type === 'complete')
   assert.ok(complete)
   assert.equal(complete.result.product, 'Test Product')
   assert.equal(complete.result.viralScore, 82)
   assert.ok(complete.result.content.twitter)
+
+  const marketDone = events.find((e) => e.agent === 'marketAnalyst' && e.type === 'agent_done')
+  assert.equal(marketDone.validation.ok, true)
+})
+
+test('streamCampaign stops on validation failure', async () => {
+  const events = []
+  const badClient = () => ({
+    messages: {
+      create: async () => ({
+        content: [{ text: 'not json at all' }]
+      })
+    }
+  })
+
+  await streamCampaign(
+    { product: 'Bad', platforms: ['twitter'] },
+    (event) => events.push(event),
+    { createClient: badClient }
+  )
+
+  assert.ok(events.some((e) => e.type === 'error'))
+  assert.equal(events.find((e) => e.type === 'complete'), undefined)
 })

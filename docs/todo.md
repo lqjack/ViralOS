@@ -27,6 +27,8 @@
 - [x] Cross-link shipped code (`/campaign`, `/api/campaign`, `lib/campaign.js`)
 - [x] Dedupe hci-mvp / hci-mcp-target / hci-abstract → [cognitive-os-mvp-canonical.md](./cognitive-os-mvp-canonical.md)
 - [x] English summary for international contributors → [COGNITIVE-OS-EN.md](./COGNITIVE-OS-EN.md)
+- [x] Shipped product design trilogy: [DESIGN.md](./DESIGN.md) · [system-design-architecture.md](./system-design-architecture.md) · [system-interaction-design.md](./system-interaction-design.md) · [system-control-data-flow.md](./system-control-data-flow.md)
+- [x] Root `README.md` links to design trilogy + cross-repo roadmap
 
 ## Infrastructure (from Part A — closed)
 
