@@ -187,15 +187,15 @@ export default function CampaignPage() {
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
-      let buffer = ''
+      let remainder = ''
 
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
 
-        buffer += decoder.decode(value, { stream: true })
-        const parsed = parseSseBuffer(buffer)
-        buffer = parsed.remainder
+        const chunk = decoder.decode(value, { stream: true })
+        const parsed = parseSseBuffer(chunk, remainder)
+        remainder = parsed.remainder
 
         if (parsed.events.length > 0) {
           setEvents((prev) => [...prev, ...parsed.events])

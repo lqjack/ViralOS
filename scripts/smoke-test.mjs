@@ -35,6 +35,9 @@ async function main() {
     const { response, body } = await json('/api/campaign')
     if (response.status !== 200) throw new Error(`Expected 200, got ${response.status}`)
     if (!body?.endpoints?.['POST /api/campaign']) throw new Error('Missing POST /api/campaign metadata')
+    if (!Array.isArray(body?.agents) || body.agents.length < 4) {
+      throw new Error('Expected agents list with Campaign Director')
+    }
   }))
 
   results.push(await check('GET /api/route returns status', async () => {
