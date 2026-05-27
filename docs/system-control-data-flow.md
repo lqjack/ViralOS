@@ -73,8 +73,13 @@ flowchart TD
   AD2 --> AS3[send agent_start growthOptimizer]
   AS3 --> R3[runAgent]
   R3 --> AD3[send agent_done]
-  AD3 --> CMP[send complete]
-  CMP --> END[res.end]
+  AD3 --> AS4[send agent_start campaignDirector]
+  AS4 --> AD4[send agent_done packaged]
+  AD4 --> CMP[send complete]
+  CMP --> ING{API_PROXY_BASE_URL?}
+  ING -->|yes| IG[ingest_done / ingest_error]
+  ING -->|no| END[res.end]
+  IG --> END
   SC -->|throw| ERR[send error]
   ERR --> END
 ```

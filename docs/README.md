@@ -24,6 +24,12 @@
 |-----|---------|
 | [deploy-ubuntu.md](./deploy-ubuntu.md) | `npm run deploy:ubuntu:sync` · `npm run verify:ubuntu` |
 
+### Ubuntu deploy & verification
+
+| Doc | Purpose |
+|-----|---------|
+| [deploy-ubuntu.md](./deploy-ubuntu.md) | Build/run on Ubuntu `:3010`, real E2E, rsync from macOS |
+
 ### Shipped product — system design trilogy
 
 | # | Document | Focus |

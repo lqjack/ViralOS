@@ -65,7 +65,7 @@ ANTHROPIC_API_KEY=... npm run verify:ubuntu:real   # real LLM E2E
 SMOKE_TEST_URL=http://127.0.0.1:3010 npm run verify:e2e-real
 ```
 
-**Last verified:** 2026-05-27 — `verify:func` 13/13 · deploy target **Ubuntu :3010**
+**Last verified:** 2026-05-27 — `verify:func` 16/16 · deploy target **Ubuntu :3010**
 
 ---
 

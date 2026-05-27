@@ -101,9 +101,20 @@ C4Context
 | `contentWriter` | Platform posts | Per-platform keys (twitter, tiktok, xiaohongshu, …) |
 | `growthOptimizer` | Score & distribution | `viralScore`, `scoreBreakdown`, `growthStrategy`, `boostTips`, `timing` |
 
-Orchestration is **strictly sequential** — each agent consumes prior outputs in prompts.
+Orchestration is **strictly sequential** — each agent consumes prior outputs in prompts. **Campaign Director** packages the final result without an extra LLM call.
 
-### 4.4 Optional proxy layer
+**Guards:** `lib/real-ai-guard.js` enforces Anthropic token usage and rejects mock-like strings. **No dev mock fallback** in production paths.
+
+### 4.4 Gateway ingest (optional)
+
+| Module | Role |
+|--------|------|
+| `lib/campaign-ingest.js` | After `complete`, POST to invest-ai if `API_PROXY_BASE_URL` set |
+| `lib/gateway-client.js` | `ingestCampaign()` → `/api/integrations/viralos/campaigns` |
+
+Disable with `VIRALOS_AUTO_INGEST=0`.
+
+### 4.5 Optional proxy layer
 
 | Route pattern | Upstream | Env |
 |---------------|----------|-----|
