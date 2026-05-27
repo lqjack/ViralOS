@@ -23,7 +23,7 @@ export default function SocialMediaContentPage() {
       </Head>
 
       <main style={{ padding: '5rem 0' }}>
-        <h1 className={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <h1 style={{ textAlign: 'center', marginBottom: '3rem' }}>
           Social Media Content Generator
         </h1>
 

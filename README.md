@@ -74,8 +74,11 @@ cd viralOS
 cp .env.example .env.local  # Add ANTHROPIC_API_KEY
 npm install && npm run dev
 
-# Or call the API directly
-curl -X POST http://localhost:3000/api/campaign \
+# Open the campaign UI
+open http://localhost:3000/campaign
+
+# Or call the API directly (SSE stream)
+curl -N -X POST http://localhost:3000/api/campaign \
   -H "Content-Type: application/json" \
   -d '{
     "product": "Portable Espresso Machine",
@@ -83,6 +86,15 @@ curl -X POST http://localhost:3000/api/campaign \
     "tone": "viral"
   }'
 ```
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `ANTHROPIC_API_KEY` | Yes (for `/api/campaign`) | Anthropic API key for Claude agents |
+| `API_PROXY_BASE_URL` | No | Backend base URL for proxy routes (`/api/stock`, `/api/dataproai`, `/api/social-media-content`) |
+
+Copy `.env.example` to `.env.local` for local development.
 
 ---
 
@@ -103,11 +115,43 @@ curl -X POST http://localhost:3000/api/campaign \
 
 ### Technology Stack
 
-- **Frontend**: Next.js 14 App Router, TypeScript
-- **AI**: Anthropic Claude claude-sonnet-4-20250514 (Multi-agent)
-- **Streaming**: Server-Sent Events (SSE)
-- **Styling**: TailwindCSS
+- **Frontend**: Next.js 14 Pages Router, React, JavaScript
+- **AI**: Anthropic Claude `claude-sonnet-4-20250514` (multi-agent)
+- **Streaming**: Server-Sent Events (SSE) via `/api/campaign`
+- **Styling**: Inline styles (minimal UI)
 - **Deployment**: Vercel (one-click)
+
+### Project Layout
+
+```
+pages/
+  index.js                 # Landing page
+  campaign.js              # Campaign generator UI (SSE client)
+  api/
+    campaign.js            # POST /api/campaign — core product API
+    route.js               # GET /api/route — health/metadata
+    [[...slug]].js         # 404 handler for unknown /api/* routes
+    stock/[[...slug]].js   # Proxy → API_PROXY_BASE_URL/api/stock/*
+    dataproai/[[...slug]].js
+    social-media-content/[[...slug]].js
+lib/
+  campaign.js              # Shared agent orchestration + streaming
+  proxy.js                 # Env-based proxy helper
+route.js                   # Legacy export shim → lib/campaign.js
+vercel.json                # Next.js build config
+.env.example               # Required env vars
+```
+
+### API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/campaign` | Campaign API metadata |
+| `POST` | `/api/campaign` | Generate campaign (SSE stream) |
+| `GET` | `/api/route` | Route API status |
+| `*` | `/api/stock/*` | Proxy (requires `API_PROXY_BASE_URL`) |
+| `*` | `/api/dataproai/*` | Proxy (requires `API_PROXY_BASE_URL`) |
+| `*` | `/api/social-media-content/*` | Proxy (requires `API_PROXY_BASE_URL`) |
 
 ---
 
@@ -141,8 +185,10 @@ Scores 0–100. Above 80 = high viral potential.
 
 ## 🔧 SDK Reference
 
+The npm package `@viralOS/sdk` is the planned client library for programmatic access. This repo ships the **self-hosted API and web UI** today.
+
 ```javascript
-// Campaign Director
+// Planned SDK usage (@viralOS/sdk)
 const director = new CampaignDirector({
   product: string,          // Required
   description?: string,     // Product description
@@ -182,8 +228,25 @@ const campaign = await director.run()
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/viralOS/viralOS&env=ANTHROPIC_API_KEY)
 
 1. Click the button above
-2. Add your `ANTHROPIC_API_KEY`
-3. Deploy in 60 seconds
+2. Add your `ANTHROPIC_API_KEY` (required for campaign generation)
+3. Optionally add `API_PROXY_BASE_URL` if using proxy routes
+4. Deploy in 60 seconds
+
+After deploy, open `/campaign` to generate a campaign from the browser.
+
+---
+
+## 📚 Relationship to `docs/`
+
+This repo ships **ViralOS** (viral marketing campaigns). The `docs/` folder contains **Personal Cognitive OS** design documents — a separate vision (WeChat life reports, cognitive mirror) that is **not implemented** here.
+
+| Resource | Purpose |
+|----------|---------|
+| [docs/README.md](./docs/README.md) | Documentation index + product boundary |
+| [docs/issue.md](./docs/issue.md) | Deploy incident retro, gap analysis, resolution |
+| [docs/todo.md](./docs/todo.md) | Task tracker |
+
+**Shipped today:** `/campaign` UI · `POST /api/campaign` SSE API · `lib/campaign.js`
 
 ---
 
@@ -195,7 +258,12 @@ We welcome contributions! Here's how:
 git clone https://github.com/viralOS/viralOS
 cd viralOS
 npm install
+cp .env.example .env.local
 npm run dev
+
+# Verify routes locally
+npm run build && npm run start &
+npm run smoke-test
 
 # Create a feature branch
 git checkout -b feature/new-platform-agent

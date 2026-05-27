@@ -13,10 +13,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "demo": "node examples/basic-campaign.js"
+    "demo": "node examples/basic-campaign.js",
+    "smoke-test": "node scripts/smoke-test.mjs",
+    "test": "node --test scripts/campaign-lib.test.mjs",
+    "verify": "npm run build && npm run test"
   },
   "dependencies": {
-    "next": "14.2.0",
+    "next": "14.2.35",
     "react": "^18",
     "react-dom": "^18",
     "@anthropic-ai/sdk": "^0.24.0",

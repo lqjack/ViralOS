@@ -23,7 +23,7 @@ export default function RoutePage() {
       </Head>
 
       <main style={{ padding: '5rem 0' }}>
-        <h1 className={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <h1 style={{ textAlign: 'center', marginBottom: '3rem' }}>
           Route API Endpoint
         </h1>
 

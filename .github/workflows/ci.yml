@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run verify
+
+      - name: Start server and run smoke tests
+        env:
+          ANTHROPIC_API_KEY: ''
+        run: |
+          npm run start &
+          npx --yes wait-on http://localhost:3000/api/campaign --timeout 60000
+          npm run smoke-test

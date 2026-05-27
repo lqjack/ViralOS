@@ -10,15 +10,15 @@ export default function Home() {
       </Head>
 
       <main style={{ padding: '5rem 0', textAlign: 'center' }}>
-        <h1 className={{ marginBottom: '2rem', fontSize: '3rem', fontWeight: 'bold' }}>
+        <h1 style={{ marginBottom: '2rem', fontSize: '3rem', fontWeight: 'bold' }}>
           ViralOS
         </h1>
-        <p className={{ marginBottom: '3rem', fontSize: '1.25rem', color: '#666' }}>
+        <p style={{ marginBottom: '3rem', fontSize: '1.25rem', color: '#666' }}>
           AI-Native Growth Operating System — Turn any product into a viral campaign
         </p>
 
         <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-          <a href="/route" style={{
+          <a href="/campaign" style={{
             padding: '0.75rem 1.5rem',
             backgroundColor: '#000',
             color: '#fff',
@@ -26,18 +26,7 @@ export default function Home() {
             borderRadius: '0.375rem',
             fontWeight: '500'
           }}>
-            Route API
-          </a>
-
-          <a href="/social-media-content" style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: '#000',
-            color: '#fff',
-            textDecoration: 'none',
-            borderRadius: '0.375rem',
-            fontWeight: '500'
-          }}>
-            Social Media Content
+            Generate Campaign
           </a>
         </div>
       </main>
