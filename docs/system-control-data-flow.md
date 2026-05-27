@@ -1,6 +1,6 @@
 # ViralOS — 系统控制流与数据流设计
 
-> **Version**: 2026-05-27 · **Code HEAD**: `f03bf28`  
+> **Version**: 2026-05-27 · **Code HEAD**: `f104bfe`  
 > **Companion**: [system-design-architecture.md](./system-design-architecture.md) · [system-interaction-design.md](./system-interaction-design.md) · [DESIGN.md](./DESIGN.md)
 
 本文档说明 **核心组件内部的控制逻辑**（调用顺序、分支、错误处理）与 **数据流**（输入如何变形、在何处下发），与交互文档中的序列图互补。

@@ -1,6 +1,6 @@
 # ViralOS — System Design Architecture
 
-> **Version**: 2026-05-27 · **Code HEAD**: `f03bf28`  
+> **Version**: 2026-05-27 · **Code HEAD**: `f104bfe`  
 > **Companion**: [system-interaction-design.md](./system-interaction-design.md) · [system-control-data-flow.md](./system-control-data-flow.md) · [DESIGN.md](./DESIGN.md)
 
 This document describes **what ViralOS is** — layers, components, deployment, and boundaries. For sequences and APIs, see the interaction doc. For agent pipeline control/data transforms, see the control/data flow doc.

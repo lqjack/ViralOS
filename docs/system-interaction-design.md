@@ -1,6 +1,6 @@
 # ViralOS — System Interaction Design
 
-> **Version**: 2026-05-27 · **Code HEAD**: `f03bf28`  
+> **Version**: 2026-05-27 · **Code HEAD**: `f104bfe`  
 > **Companion**: [system-design-architecture.md](./system-design-architecture.md) · [system-control-data-flow.md](./system-control-data-flow.md)
 
 This document describes **how actors interact** — user journeys, request sequences, SSE event contracts, and failure modes.
