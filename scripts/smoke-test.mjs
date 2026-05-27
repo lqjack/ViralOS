@@ -40,6 +40,14 @@ async function main() {
     }
   }))
 
+  results.push(await check('GET /api/health returns ok', async () => {
+    const { response, body } = await json('/api/health')
+    if (response.status !== 200) throw new Error(`Expected 200, got ${response.status}`)
+    if (body?.status !== 'ok' || body?.service !== 'viralOS') {
+      throw new Error('Expected viralOS health payload')
+    }
+  }))
+
   results.push(await check('GET /api/route returns status', async () => {
     const { response, body } = await json('/api/route')
     if (response.status !== 200) throw new Error(`Expected 200, got ${response.status}`)
@@ -48,6 +56,12 @@ async function main() {
 
   results.push(await check('GET /api/social-media-content handles missing proxy config', async () => {
     const { response, body } = await json('/api/social-media-content')
+    if (response.status !== 503) throw new Error(`Expected 503, got ${response.status}`)
+    if (!body?.hint) throw new Error('Expected proxy configuration hint')
+  }))
+
+  results.push(await check('GET /api/integrations/viralos proxy requires API_PROXY_BASE_URL', async () => {
+    const { response, body } = await json('/api/integrations/viralos/campaigns/schema')
     if (response.status !== 503) throw new Error(`Expected 503, got ${response.status}`)
     if (!body?.hint) throw new Error('Expected proxy configuration hint')
   }))

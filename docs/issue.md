@@ -1,10 +1,10 @@
 # Issue: Vercel Deployment, Product Identity Drift & docs/ Design Gap
 
-**Status:** Resolved (infra + docs alignment)  
-**Severity:** High (deploy) · Medium (strategy/docs drift) — **closed**  
+**Status:** Shipped (code complete) · **Open:** operator verification on Ubuntu  
+**Severity:** High (deploy) — **closed** · Medium (ops sign-off) — **open**  
 **Reported:** 2026-05-22  
 **Last reviewed:** 2026-05-27  
-**Last updated:** 2026-05-27 (ViralOS-first decision + P0–P2 fixes)
+**Last updated:** 2026-05-27 (design implementation + issue/todo sync)
 
 ---
 
@@ -20,9 +20,45 @@ Three separate problems were folded into one repo:
 
 The May 2026 deploy incident was a **symptom**, not the root strategic issue. Inherited `dataproai-set` Vercel config and proxy tunnels suggest the repo absorbed artifacts from prior projects (dataproai, Cognitive OS, ViralOS) without a single product boundary or docs-to-code traceability gate.
 
-**Verdict:** ViralOS campaign path is fixed and documented. Cognitive OS remains a **deferred vision** in `docs/` — not current implementation spec.
+**Verdict:** ViralOS campaign path is **implemented and documented** ([SHIPPED.md](./SHIPPED.md), [implementation-map.md](./implementation-map.md)). Cognitive OS remains a **deferred vision** in `docs/` — not current implementation spec.
+
+**Remaining work is operator-side:** deploy on Ubuntu, run real Anthropic E2E, and optional cross-repo gateway ingest — not missing application code for the shipped product.
 
 **Task tracker:** [todo.md](./todo.md)
+
+---
+
+# Part G — Open Issues & Operator Backlog (2026-05-27)
+
+## Active issues (not code blockers)
+
+| ID | Issue | Impact | Mitigation |
+|----|--------|--------|------------|
+| **OPS-1** | **Ubuntu deploy + real E2E not signed off** in this environment | Cannot claim production-ready until `verify:ubuntu:all` passes on host | SSH to Ubuntu → `npm run deploy:ubuntu:sync` or `deploy-viralos.sh` → `verify:ubuntu:all` with `ANTHROPIC_API_KEY` in `.env` |
+| **OPS-2** | **macOS insufficient CPU/RAM** for full `next build` / long LLM runs | Local `verify:full` / `verify:e2e-real` OOM or timeout | Use `npm run verify:func` on Mac; build + real E2E **only on Ubuntu** ([deploy-ubuntu.md](./deploy-ubuntu.md)) |
+| **OPS-3** | **SSH / tunnel to Ubuntu** may be down (`frpc`, cloudflared linux connector) | `deploy:ubuntu:sync` fails from Mac | LAN/console: `cd ~/llm-gateway && bun run recover:remote-ssh`; see invest-ai [cloudflared-tunnel-stability](https://github.com/lqjack/dataproaiset/blob/main/docs/operations/cloudflared-tunnel-stability.md) |
+| **OPS-4** | **`API_PROXY_BASE_URL` on Vercel** cannot reach LAN `:8001` | Proxy routes + auto-ingest fail on public deploy | Campaign LLM still works via `ANTHROPIC_API_KEY`; set proxy only when invest-ai gateway is **publicly reachable** (dedicated tunnel hostname → `:8001`, not `gateway.datapro.asia` :3000) |
+| **OPS-5** | **Hostname confusion** `gateway.datapro.asia` vs invest-ai gateway | Wrong proxy target | `gateway.datapro.asia` → llm-gateway **:3000**; ViralOS proxy/ingest → invest-ai **:8001** (`http://127.0.0.1:8001` on Ubuntu, `http://192.168.1.4:8001` from LAN) |
+
+## Pending updates (tracked in [todo.md](./todo.md))
+
+| Priority | Item | Owner |
+|----------|------|--------|
+| P3 | Ubuntu: `verify:ubuntu:all` + `verify:e2e-real` with live `ANTHROPIC_API_KEY` | Operator |
+| P3 | Ubuntu: invest-ai `start-core-gateway.sh` + `verify:cross-repo-live` | Operator |
+| P3 | Vercel project env: `ANTHROPIC_API_KEY` (required); `API_PROXY_BASE_URL` only if public :8001 | Operator |
+| P4 | Optional: Cloudflare ingress for invest-ai `:8001` (Vercel proxy + ingest from internet) | Infra |
+| P4 | `examples/basic-campaign.js` align with `streamCampaign` / document as CLI alternative | Dev |
+| — | Cognitive OS MVP (Option B) | **Deferred** — see Part E |
+
+## Resolved since last issue sync
+
+- [x] Design trilogy + [implementation-map.md](./implementation-map.md) traceability  
+- [x] No-mock production path (`real-ai-guard`, `verify:no-mock`)  
+- [x] 4-agent pipeline, validation, gateway ingest SSE (`ingest_done` / `ingest_error`)  
+- [x] Ubuntu deploy scripts + [deploy-ubuntu.md](./deploy-ubuntu.md)  
+- [x] `GET /api/health` for canary (smoke 9/9)  
+- [x] `pages/api/integrations/viralos/` BFF proxy  
 
 ---
 
@@ -75,6 +111,16 @@ ViralOS failed to deploy and serve API endpoints on Vercel. Root causes: inherit
 | Gateway auto-ingest after `complete` (Phase 4.3) | `lib/campaign-ingest.js`, `lib/gateway-client.js`, SSE `ingest_done` / `ingest_error` |
 | No-mock production guards + Ubuntu deploy/verify | `lib/real-ai-guard.js`, `scripts/verify-no-mock.sh`, `docs/deploy-ubuntu.md`, `scripts/ubuntu/deploy-viralos.sh` |
 
+### Phase 5 — Shipped status sync (2026-05-27)
+
+| Change | File(s) |
+|--------|---------|
+| Design ↔ code map + shipped summary | `docs/implementation-map.md`, `docs/SHIPPED.md` |
+| Health probe | `pages/api/health.js` |
+| SSE E2E assertion tests | `scripts/sse-campaign-e2e.test.mjs` |
+| Integrations BFF route | `pages/api/integrations/viralos/[[...slug]].js` |
+| Open issues / operator backlog | `docs/issue.md` Part G, `docs/todo.md` P3 |
+
 ## Deployment Acceptance Criteria
 
 - [x] `npm run build` succeeds locally and on Vercel
@@ -83,8 +129,10 @@ ViralOS failed to deploy and serve API endpoints on Vercel. Root causes: inherit
 - [x] No hardcoded tunnel URLs in source
 - [x] README matches router model and layout
 - [x] Proxy routes return 503 with hint when `API_PROXY_BASE_URL` unset
-- [x] CI: `verify:func` (16 tests) + build + smoke (8/8)
+- [x] CI: `verify:func` (16 tests) + build + smoke (9/9)
 - [x] Ubuntu deploy + `verify:ubuntu:all` documented
+- [ ] **Operator sign-off:** `verify:ubuntu:all` on production Ubuntu host (see Part G OPS-1)
+- [ ] **Operator sign-off:** `verify:cross-repo-live` with gateway on Ubuntu (see Part G)
 
 ## Lessons (infra)
 
@@ -273,6 +321,20 @@ Completed:
 - [x] Dedupe hci-mvp / hci-mcp-target / hci-abstract → `docs/cognitive-os-mvp-canonical.md`
 - [x] English summary → `docs/COGNITIVE-OS-EN.md`
 
+### P3 — Operator verification (open)
+
+- [ ] Ubuntu deploy: `npm run deploy:ubuntu:sync` or `./scripts/ubuntu/deploy-viralos.sh`
+- [ ] Ubuntu gates: `npm run verify:ubuntu:all` (func + smoke + real E2E when key set)
+- [ ] invest-ai on Ubuntu: `./scripts/ubuntu/start-core-gateway.sh` (invest-ai repo)
+- [ ] Cross-repo: `API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live`
+- [ ] Vercel: set `ANTHROPIC_API_KEY`; document proxy limitation (Part G OPS-4)
+
+### P4 — Optional enhancements
+
+- [ ] Public tunnel / hostname for invest-ai `:8001` (Vercel `API_PROXY_BASE_URL`)
+- [ ] Refresh `examples/basic-campaign.js` to call `streamCampaign` or mark deprecated
+- [ ] NeuraDesk MCP plugin registration (llm-gateway stub exists; see cross-repo roadmap)
+
 ---
 
 # Part F — Review Verdict
@@ -283,7 +345,8 @@ Completed:
 | ViralOS campaign product path | **SHIPPABLE** (with `ANTHROPIC_API_KEY`) |
 | docs/ as implementation spec | **NOT VALID** — design-only, deferred vision archive |
 | Repo strategic coherence | **RESOLVED** — ViralOS-first; Cognitive OS deferred |
-| Overall issue | **CLOSED** |
+| Overall issue | **CLOSED** (product) · **OPEN** (Ubuntu ops sign-off — Part G) |
+| Design implementation (shipped product) | **COMPLETE** — [SHIPPED.md](./SHIPPED.md) |
 
 ---
 
@@ -295,7 +358,9 @@ Completed:
 8cedbc7 Add social-media-content API route and vercel.json rewrite to fix 404
 62a4e65 Fix: Move API routes to correct Next.js location (/pages/api/)
 ff1f277 Simplify vercel.json per README: Focus on core Next.js landing page experience
-(2026-05-27) Phases 1–3: campaign API, UI, README, CI, ViralOS-first docs alignment
+(2026-05-27) Phases 1–4: campaign API, design trilogy, no-mock, Ubuntu deploy
+1e20b37 Complete design implementation: no-mock, Ubuntu deploy, gateway ingest
+617f3f8 docs: implementation-map + interaction sync
 ```
 
 ---
@@ -303,20 +368,23 @@ ff1f277 Simplify vercel.json per README: Focus on core Next.js landing page expe
 # Appendix — Reproduction (current)
 
 ```bash
-git clone https://github.com/viralOS/viralOS
-cd viralOS
+git clone https://github.com/lqjack/ViralOS.git
+cd ViralOS
 cp .env.example .env.local   # ANTHROPIC_API_KEY required for campaign
-npm install && npm run dev
+npm install
+
+# macOS — lightweight (no full build)
+npm run verify:func          # 16 tests + no-mock scan
+
+# macOS — full CI parity (heavy; prefer Ubuntu)
+npm run verify:full          # build + smoke 9/9
+
+# Ubuntu (recommended for build + real LLM)
+npm run deploy:ubuntu:sync
+ssh ubuntu 'cd ~/ViralOS && npm run verify:ubuntu:all'
 
 open http://localhost:3000/campaign          # ViralOS — implemented
 # docs/hci-landingpage.md WeChat upload CTA  # Cognitive OS — not implemented
-
-npm run verify                               # build + 2 unit tests
-npm run verify:full                          # verify + 8 smoke checks (recommended)
-
-# Or manually:
-npm run build && npm run start &
-ANTHROPIC_API_KEY= npm run smoke-test        # 8/8 expected
 ```
 
-**Resolution commits:** `44e6c03` (deploy/API/docs) · `4fbf599` (verify:full + ESM)
+**Key commits:** `1e20b37` (no-mock + Ubuntu + ingest) · `617f3f8` (implementation map) · `596fcd5` (design trilogy)

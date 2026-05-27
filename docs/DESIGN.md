@@ -1,6 +1,6 @@
 # ViralOS — Design & Architecture Index
 
-> **Code HEAD**: `f104bfe` · Updated 2026-05-27  
+> **Code HEAD**: `617f3f8` · Updated 2026-05-27 · [SHIPPED.md](./SHIPPED.md)  
 > **Shipped product**: viral campaign generator (`/campaign`, `POST /api/campaign`)
 
 This page is the **entry point** for ViralOS system design. Three companion documents cover architecture, interaction, and internal control/data flow:

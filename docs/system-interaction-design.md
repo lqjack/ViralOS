@@ -1,6 +1,6 @@
 # ViralOS — System Interaction Design
 
-> **Version**: 2026-05-27 · **Code HEAD**: `f104bfe`  
+> **Version**: 2026-05-27 · **Code HEAD**: `main` (see [SHIPPED.md](./SHIPPED.md))  
 > **Companion**: [system-design-architecture.md](./system-design-architecture.md) · [system-control-data-flow.md](./system-control-data-flow.md)
 
 This document describes **how actors interact** — user journeys, request sequences, SSE event contracts, and failure modes.
@@ -48,6 +48,7 @@ sequenceDiagram
 |------|--------|------|
 | `/` | GET | Landing → link to `/campaign` |
 | `/campaign` | GET | Campaign generator UI |
+| `/api/health` | GET | Liveness probe (`{ service, status }`) |
 | `/api/campaign` | GET | API metadata (`CAMPAIGN_API_INFO`) |
 | `/api/campaign` | POST | Start campaign generation (SSE) |
 
@@ -89,7 +90,13 @@ Legacy (optional): `/api/dataproai/*`, `/api/stock/*`, `/api/social-media-conten
 ```json
 {
   "name": "ViralOS Campaign API",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "agents": [
+    { "id": "marketAnalyst", "name": "Market Analyst" },
+    { "id": "contentWriter", "name": "Content Writer" },
+    { "id": "growthOptimizer", "name": "Growth Optimizer" },
+    { "id": "campaignDirector", "name": "Campaign Director" }
+  ],
   "endpoints": { "POST /api/campaign": "Generate viral campaign via streaming SSE" }
 }
 ```

@@ -59,6 +59,7 @@ REMOTE=ubuntu npm run deploy:ubuntu:sync
 ```bash
 cd ~/ViralOS
 npm run verify:func
+curl -s http://127.0.0.1:3010/api/health   # {"service":"viralOS","status":"ok",...}
 SMOKE_TEST_URL=http://127.0.0.1:3010 npm run smoke-test
 ```
 

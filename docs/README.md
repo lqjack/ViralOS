@@ -16,7 +16,7 @@
 - API: `GET|POST /api/campaign` (SSE)
 - Code: `lib/campaign.js`, `pages/api/campaign.js`
 
-**Issue & gap analysis:** [issue.md](./issue.md) · **Tasks:** [todo.md](./todo.md)
+**Issue & gap analysis:** [issue.md](./issue.md) (incl. **open ops** Part G) · **Tasks:** [todo.md](./todo.md) · **Shipped:** [SHIPPED.md](./SHIPPED.md)
 
 ### Ubuntu deploy (build on server, not localhost)
 
@@ -39,6 +39,7 @@
 | 2 | [system-interaction-design.md](./system-interaction-design.md) | **系统交互** — 用户旅程、API/SSE 契约、序列图 |
 | 3 | [system-control-data-flow.md](./system-control-data-flow.md) | **控制流与数据流** — 四步编排、SSE 总线、数据变形 |
 | 4 | [implementation-map.md](./implementation-map.md) | **设计 ↔ 代码** 可追溯矩阵 + 验证门禁 |
+| — | [SHIPPED.md](./SHIPPED.md) | **发货状态** — P1 实现完成清单 + 运维验证步骤 |
 
 **Cross-repo planning (invest-ai · llm-gateway · viralos):** [cross-repo-reuse-and-roadmap.md](./cross-repo-reuse-and-roadmap.md) (canonical matrix in invest-ai `docs/architecture/`)
 

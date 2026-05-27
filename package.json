@@ -18,7 +18,7 @@
     "smoke-test": "node scripts/smoke-test.mjs",
     "smoke-test:ci": "node scripts/smoke-with-server.mjs",
     "verify:no-mock": "bash scripts/verify-no-mock.sh",
-    "test": "node --test scripts/campaign-lib.test.mjs scripts/campaign-validate.test.mjs scripts/sse-parse.test.mjs scripts/gateway-client.test.mjs scripts/real-ai-guard.test.mjs scripts/campaign-ingest.test.mjs",
+    "test": "node --test scripts/campaign-lib.test.mjs scripts/campaign-validate.test.mjs scripts/sse-parse.test.mjs scripts/sse-campaign-e2e.test.mjs scripts/gateway-client.test.mjs scripts/real-ai-guard.test.mjs scripts/campaign-ingest.test.mjs",
     "verify:func": "npm run verify:no-mock && npm run test",
     "verify": "npm run build && npm run verify:func",
     "verify:full": "npm run verify && npm run smoke-test:ci",

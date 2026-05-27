@@ -3,6 +3,7 @@ export default function handler(req, res) {
     error: 'API route not found',
     path: req.url,
     available: [
+      'GET /api/health',
       'GET /api/campaign',
       'POST /api/campaign',
       'GET /api/route',

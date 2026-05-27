@@ -17,6 +17,10 @@ Use this when reviewing whether the **full design** is implemented (not Cognitiv
 | SSE event bus | `lib/sse-parse.js`, `pages/api/campaign.js` | `sse-parse.test.mjs`, smoke |
 | Structured campaign UI | `pages/campaign.js`, `lib/campaign-ui-state.js` | manual `/campaign` |
 | Gateway ingest (optional) | `lib/campaign-ingest.js`, `lib/gateway-client.js` | `campaign-ingest.test.mjs` |
+| Gateway client (catalog / ingest / search) | `lib/gateway-client.js` | `gateway-client.test.mjs` (mock fetch) |
+| SSE E2E assertions | `scripts/sse-campaign-e2e.mjs` | `sse-campaign-e2e.test.mjs` |
+| BFF integrations proxy | `pages/api/integrations/viralos/[[...slug]].js` | smoke (503 without proxy) |
+| Health probe | `pages/api/health.js` | smoke |
 
 ---
 
