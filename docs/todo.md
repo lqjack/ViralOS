@@ -9,7 +9,24 @@
 **Code HEAD:** see `git log -1 --oneline` (update on each status sync commit)
 
 <!-- CURSOR_HOOK_TODO:START -->
-<!-- Hook priorities — updated by retro-review-sync after auto-commit -->
+## Hook priorities (auto-sync) — 2026-05-28 08:33 UTC
+
+> After auto-commit. Top-down, then re-run verify. Opt out: `.cursor/no-auto-retro`  
+> Cross-repo: `plugins/_hooks/BEST-PRACTICES.md` (llm-gateway) · ViralOS `PROJECT-STATUS.md`
+
+### Backlog autopilot (mandatory for agents)
+
+When the user asked to clear **issue/todo by priority**: **one turn = drain actionable queue** — `bun run backlog:list` then loop `backlog:next` → implement → `verify:func` → mark `[x]` until done. **Forbidden:** stop after one item; “下一项将自动开干” without implementing that item in the same turn; “pick A or B” / “confirm before next”. Full policy: [plugins/_hooks/BACKLOG_AUTOPILOT.md](../plugins/_hooks/BACKLOG_AUTOPILOT.md).
+
+### P3 — fix in order
+
+- [ ] (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
+- [ ] (existing backlog) **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
+- [ ] (existing backlog) **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
+- [ ] (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
+- [ ] (existing backlog) `verify:cross-repo-live` passes on Ubuntu
+- [ ] (existing backlog) invest-ai gateway running on `:8001`
+
 <!-- CURSOR_HOOK_TODO:END -->
 
 ---

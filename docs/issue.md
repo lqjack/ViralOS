@@ -8,7 +8,122 @@
 **Code HEAD:** see [PROJECT-STATUS.md](./PROJECT-STATUS.md) · `git log -1`
 
 <!-- CURSOR_HOOK_RETRO:START -->
-<!-- Hook retro block — updated by `.cursor/hooks/retro-review-sync.sh` after auto-commit -->
+## Hook retro (auto) — 2026-05-28 08:33 UTC
+
+| Field | Value |
+|-------|-------|
+| Profile | `viralos` |
+| Root | `/Users/liu/Desktop/ViralOS` |
+| HEAD | `14acd1b` |
+| Verify | `npm run verify:func` → **PASS** |
+
+**Practices:** [docs/PROJECT-STATUS.md](./PROJECT-STATUS.md) · off-LAN `verify:local-design`
+
+### Session changes (last commit)
+
+- `docs/PROJECT-STATUS.md`
+- `docs/issue.md`
+- `docs/todo.md`
+- `scripts/load-project-env.mjs`
+- `scripts/verify-local-design.mjs`
+
+### Design vs implementation gaps
+
+- **P3** — (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
+- **P3** — (existing backlog) **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
+- **P3** — (existing backlog) **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
+- **P3** — (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
+- **P3** — (existing backlog) `verify:cross-repo-live` passes on Ubuntu
+- **P3** — (existing backlog) invest-ai gateway running on `:8001`
+
+### Verify output (tail)
+
+```
+gestCampaign POSTs viralos-campaign-v1 body
+ok 13 - ingestCampaign POSTs viralos-campaign-v1 body
+  ---
+  duration_ms: 2.765307
+  type: 'test'
+  ...
+# Subtest: ingestCampaign sends x-viralos-ingest-token when set
+ok 14 - ingestCampaign sends x-viralos-ingest-token when set
+  ---
+  duration_ms: 4.248186
+  type: 'test'
+  ...
+# Subtest: searchCampaigns passes query params
+ok 15 - searchCampaigns passes query params
+  ---
+  duration_ms: 4.455429
+  type: 'test'
+  ...
+# Subtest: hasRealTokenUsage requires tokens
+ok 16 - hasRealTokenUsage requires tokens
+  ---
+  duration_ms: 2.977591
+  type: 'test'
+  ...
+# Subtest: assertRealAgentUsage throws without usage
+ok 17 - assertRealAgentUsage throws without usage
+  ---
+  duration_ms: 3.559576
+  type: 'test'
+  ...
+# Subtest: assertNoMockContent rejects mock phrases
+ok 18 - assertNoMockContent rejects mock phrases
+  ---
+  duration_ms: 0.425534
+  type: 'test'
+  ...
+# Subtest: assertRealCampaignUsage requires all three agents
+ok 19 - assertRealCampaignUsage requires all three agents
+  ---
+  duration_ms: 2.358486
+  type: 'test'
+  ...
+# Subtest: assertCampaignE2eEvents accepts full 4-agent pipeline
+ok 20 - assertCampaignE2eEvents accepts full 4-agent pipeline
+  ---
+  duration_ms: 33.261121
+  type: 'test'
+  ...
+# Subtest: assertCampaignE2eEvents rejects missing complete
+ok 21 - assertCampaignE2eEvents rejects missing complete
+  ---
+  duration_ms: 24.039897
+  type: 'test'
+  ...
+# Subtest: assertCampaignE2eEvents rejects validation failure
+ok 22 - assertCampaignE2eEvents rejects validation failure
+  ---
+  duration_ms: 15.387161
+  type: 'test'
+  ...
+# Subtest: parseSseBuffer extracts JSON events
+ok 23 - parseSseBuffer extracts JSON events
+  ---
+  duration_ms: 2.759888
+  type: 'test'
+  ...
+# Subtest: parseSseBuffer keeps partial remainder
+ok 24 - parseSseBuffer keeps partial remainder
+  ---
+  duration_ms: 0.742012
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3031.632114
+```
+
+**Next:** Fix [todo.md](./todo.md) § Hook priorities (auto-sync), P0→P1 first, re-run verify.
+
 <!-- CURSOR_HOOK_RETRO:END -->
 
 ---
