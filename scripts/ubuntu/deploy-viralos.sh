@@ -52,7 +52,12 @@ stop_old() {
       sleep 2
     fi
   fi
+  if command -v fuser >/dev/null 2>&1; then
+    fuser -k "${PORT}/tcp" 2>/dev/null || true
+  fi
+  pkill -f "${APP_DIR}/.*next-server" 2>/dev/null || true
   pkill -f "${APP_DIR}.*next start" 2>/dev/null || true
+  sleep 1
 }
 
 stop_old
@@ -64,7 +69,7 @@ echo "==> Starting ViralOS on 0.0.0.0:${PORT}"
   # shellcheck disable=SC1091
   source .env.local
   set +a
-  PORT="$PORT" HOSTNAME=0.0.0.0 nohup npm run start >> "$LOG_FILE" 2>&1 &
+  nohup npx next start -p "$PORT" -H 0.0.0.0 >> "$LOG_FILE" 2>&1 &
   echo $! > "$PID_FILE"
 )
 
