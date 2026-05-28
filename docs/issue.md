@@ -3,8 +3,8 @@
 **Status:** Shipped (code complete) · **Open:** operator verification on Ubuntu  
 **Severity:** High (deploy) — **closed** · Medium (ops sign-off) — **open**  
 **Reported:** 2026-05-22  
-**Last reviewed:** 2026-05-27 (retro + issue/todo sync)  
-**Last updated:** 2026-05-27  
+**Last reviewed:** 2026-05-28 (local verification pass; P3 LAN still blocked)  
+**Last updated:** 2026-05-28  
 **Code HEAD:** see [PROJECT-STATUS.md](./PROJECT-STATUS.md) · `git log -1`
 
 <!-- CURSOR_HOOK_RETRO:START -->
@@ -133,16 +133,16 @@ The May 2026 deploy incident was a **symptom**, not the root strategic issue. In
 | docs/ still large | 17 hci files unchanged in scope | Vision archive OK; **do not** implement from hci-* without new decision |
 | Cross-repo ingest untested live | invest-ai `:8001` not running in agent session | Run `verify:cross-repo-live` on Ubuntu after `start-core-gateway.sh` |
 
-## Metrics (local, 2026-05-27)
+## Metrics (local, 2026-05-28)
 
 | Gate | Result | Notes |
 |------|--------|-------|
 | `npm run verify:no-mock` | PASS | `lib/`, `pages/`, `.next/` scan |
 | `npm run verify:func` | **24/24** | incl. gateway + SSE contract tests |
-| `npm run verify:local-design` | func + optional CLI LLM | use when OPS-3 blocks Ubuntu |
+| `npm run verify:local-design` | **PASS** | func always; CLI skipped without `.env.local` `sk-ant-*` |
 | `npm run verify:full` | build + **10/10** smoke | after `npm run build` |
-| `verify:ubuntu:all` | **Not run** | blocked by OPS-1 / OPS-3 |
-| `verify:cross-repo-live` | **Not run** | blocked by gateway + OPS-1 |
+| `verify:ubuntu:all` | **Not run** | blocked by OPS-1 / OPS-3 (SSH timeout off-LAN) |
+| `verify:cross-repo-live` | **Not run** | blocked by gateway `:8001` + OPS-1 |
 
 ## Decisions (record)
 

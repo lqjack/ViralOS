@@ -6,7 +6,7 @@
 
 **Status snapshot:** [PROJECT-STATUS.md](./PROJECT-STATUS.md) · **Shipped:** [SHIPPED.md](./SHIPPED.md) · **Traceability:** [implementation-map.md](./implementation-map.md)
 
-**Code HEAD:** `5296ec8` (update on each status sync commit)
+**Code HEAD:** see `git log -1 --oneline` (update on each status sync commit)
 
 <!-- CURSOR_HOOK_TODO:START -->
 <!-- Hook priorities — updated by retro-review-sync after auto-commit -->
@@ -155,13 +155,13 @@ npm run verify:ubuntu:all
 API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live
 ```
 
-| Gate | Last run (2026-05-27) | Where |
+| Gate | Last run (2026-05-28) | Where |
 |------|------------------------|-------|
 | `verify:func` | **24/24** PASS | macOS |
-| `verify:local-design` | func PASS; CLI LLM if key set | macOS (OPS-3 workaround) |
-| `verify:full` | **10/10** smoke (after build) | macOS / CI |
-| `verify:ubuntu:all` | Not run | Ubuntu — **P3** |
-| `verify:cross-repo-live` | Not run | Ubuntu + gateway — **P3** |
+| `verify:local-design` | **PASS** — func; CLI skipped (no `.env.local` `sk-ant-*`; shell proxy ignored) | macOS |
+| `verify:full` | **10/10** smoke (after build) | macOS |
+| `verify:ubuntu:all` | Not run | Ubuntu — **P3** (SSH/LAN blocked) |
+| `verify:cross-repo-live` | Not run | Ubuntu + gateway — **P3** (`:8001` unreachable) |
 
 ---
 

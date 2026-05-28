@@ -1,6 +1,6 @@
 # ViralOS — Project status (on-disk snapshot)
 
-> **Updated:** 2026-05-27 · **Branch:** `main` · **Product:** viral campaign generator (ViralOS-first)  
+> **Updated:** 2026-05-28 · **Branch:** `main` · **Product:** viral campaign generator (ViralOS-first)  
 > **Sync:** This file is the single operational snapshot; keep [todo.md](./todo.md) and [issue.md](./issue.md) in sync when status changes.
 
 ---
@@ -34,12 +34,12 @@
 
 | Command | Needs Ubuntu | Needs API key | Last known |
 |---------|--------------|---------------|------------|
-| `npm run verify:func` | No | No | 24/24 PASS |
-| `npm run verify:local-design` | No | Optional (CLI) | PASS off-LAN |
-| `npm run verify:full` | No (CI OK) | No | smoke 10/10 |
-| `npm run deploy:ubuntu:sync` | Yes (LAN) | No | Not run off-LAN |
-| `npm run verify:ubuntu:all` | Yes | Yes (`.env`) | Not run off-LAN |
-| `npm run verify:cross-repo-live` | Yes + gateway | No | Not run off-LAN |
+| `npm run verify:func` | No | No | **24/24 PASS** (2026-05-28) |
+| `npm run verify:local-design` | No | Optional (CLI) | **PASS** — func; CLI skipped without `.env.local` sk-ant key |
+| `npm run verify:full` | No (CI OK) | No | **10/10 PASS** (2026-05-28) |
+| `npm run deploy:ubuntu:sync` | Yes (LAN) | No | **Blocked** — SSH timeout `192.168.1.4` / `ssh.datapro.asia` |
+| `npm run verify:ubuntu:all` | Yes | Yes (`.env`) | **Blocked** — OPS-1 / OPS-3 |
+| `npm run verify:cross-repo-live` | Yes + gateway | No | **Blocked** — `:8001` gateway down off-LAN |
 
 **Default gate while off-LAN:** `npm run verify:all` → `verify:local-design`
 
@@ -87,3 +87,4 @@ ViralOS pointer: [cross-repo-reuse-and-roadmap.md](./cross-repo-reuse-and-roadma
 | Date | Change |
 |------|--------|
 | 2026-05-27 | Initial snapshot: design complete, P3 LAN-deferred, local gates documented |
+| 2026-05-28 | Re-verified: `verify:func` 24/24, `verify:full` 10/10, `verify:local-design` PASS; P3 still blocked off-LAN |

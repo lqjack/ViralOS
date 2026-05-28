@@ -2,12 +2,14 @@
 /**
  * Local design verification (no Ubuntu / no cross-public-network required).
  * - verify:no-mock + unit tests (always)
- * - optional: streamCampaign CLI smoke when ANTHROPIC_API_KEY is set
+ * - optional: streamCampaign CLI smoke when project ANTHROPIC_API_KEY is set and API reachable
  */
 
 import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
+import Anthropic from '@anthropic-ai/sdk'
+import { mergeProjectEnv, readProjectEnvFiles } from './load-project-env.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -18,19 +20,81 @@ function run(cmd, args, env = process.env) {
   })
 }
 
+function projectAnthropicKey(env) {
+  const fromFile = readProjectEnvFiles(root).ANTHROPIC_API_KEY
+  if (fromFile?.trim()) return fromFile.trim()
+  const fromShell = env.ANTHROPIC_API_KEY?.trim()
+  if (!fromShell) return null
+  // Ignore non-Anthropic shell aliases (e.g. openrouter_provider,...) without .env.local
+  if (/^sk-ant-/i.test(fromShell)) return fromShell
+  return null
+}
+
+async function anthropicPreflight(env) {
+  const key = projectAnthropicKey(env)
+  if (!key) return { ok: false, reason: 'no project ANTHROPIC_API_KEY (.env.local or sk-ant-* in shell)' }
+
+  const clientEnv = { ...env, ANTHROPIC_API_KEY: key }
+  delete clientEnv.ANTHROPIC_AUTH_TOKEN
+
+  const base = clientEnv.ANTHROPIC_BASE_URL?.replace(/\/$/, '')
+  if (base?.includes('127.0.0.1') || base?.includes('localhost')) {
+    try {
+      const probe = await fetch(`${base}/v1/messages`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1,
+          messages: [{ role: 'user', content: 'ping' }]
+        }),
+        signal: AbortSignal.timeout(8000)
+      })
+      if (probe.ok || probe.status === 400 || probe.status === 401) {
+        return { ok: true, env: clientEnv }
+      }
+    } catch {
+      return {
+        ok: false,
+        reason: `ANTHROPIC_BASE_URL unreachable (${base}) — fix proxy or unset for direct api.anthropic.com`
+      }
+    }
+  }
+
+  try {
+    const client = new Anthropic({ apiKey: key, baseURL: base || undefined })
+    await client.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1,
+      messages: [{ role: 'user', content: 'ping' }]
+    })
+    return { ok: true, env: clientEnv }
+  } catch (err) {
+    return { ok: false, reason: err.message || String(err) }
+  }
+}
+
 async function main() {
   console.log('==> verify:local-design (LAN / Ubuntu ops deferred)\n')
 
   await run('npm', ['run', 'verify:func'])
 
-  if (process.env.ANTHROPIC_API_KEY) {
+  const projectEnv = mergeProjectEnv(root)
+  const preflight = await anthropicPreflight(projectEnv)
+
+  if (preflight.ok) {
     console.log('\n==> CLI streamCampaign (real Anthropic, no server)')
     await run('node', ['examples/basic-campaign.js', 'Local Design Verify'], {
-      ...process.env,
+      ...preflight.env,
       PLATFORMS: 'twitter'
     })
   } else {
-    console.log('\nSKIP CLI real LLM (set ANTHROPIC_API_KEY to run examples/basic-campaign.js)')
+    console.log(`\nSKIP CLI real LLM: ${preflight.reason}`)
+    console.log('  Add ANTHROPIC_API_KEY=sk-ant-... to .env.local for full local-design CLI gate.')
   }
 
   console.log('\nverify:local-design PASSED')
