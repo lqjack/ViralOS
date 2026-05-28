@@ -80,6 +80,7 @@ start_tunnel() {
   if ssh "${SSH_OPTS[@]}" "$REMOTE" "curl -sf http://${REMOTE_BIND}/health" >/dev/null 2>&1; then
     echo "OK: SSH tunnel already forwarding ${REMOTE_BIND} → Mac CCR"
     pgrep -f "$pattern" 2>/dev/null | head -1 >"$PID_FILE" || true
+    enable_ubuntu_docker_relay
     return 0
   fi
   stop_tunnel
@@ -97,6 +98,34 @@ start_tunnel() {
     exit 1
   fi
   echo "OK: tunnel pid $pid — Ubuntu http://${REMOTE_BIND}/health"
+  enable_ubuntu_docker_relay
+}
+
+enable_ubuntu_docker_relay() {
+  # LiteLLM container → host.docker.internal:3457 → relay → SSH tunnel 127.0.0.1:3456 → Mac CCR
+  ssh "${SSH_OPTS[@]}" "$REMOTE" '
+    RELAY_PORT=3457
+    TUNNEL_PORT=3456
+    RELAY_SCRIPT="$HOME/ViralOS/scripts/ubuntu/ccr-docker-relay.py"
+    old_pid="$(pgrep -f 'python3 -u .*ccr-docker-relay\.py' 2>/dev/null | head -1 || true)"
+    if [[ -n "$old_pid" ]]; then
+      kill "$old_pid" 2>/dev/null || true
+    fi
+    if [[ -f "$RELAY_SCRIPT" ]]; then
+      nohup python3 -u "$RELAY_SCRIPT" ${RELAY_PORT} ${TUNNEL_PORT} >> /tmp/ccr-relay.log 2>&1 &
+    elif command -v socat >/dev/null 2>&1; then
+      nohup socat TCP-LISTEN:${RELAY_PORT},bind=0.0.0.0,reuseaddr,fork TCP:127.0.0.1:${TUNNEL_PORT} >> /tmp/ccr-relay.log 2>&1 &
+    else
+      echo "[warn] missing $RELAY_SCRIPT — sync ViralOS to Ubuntu"
+      exit 1
+    fi
+    sleep 1
+    if curl -sf "http://127.0.0.1:${RELAY_PORT}/health" >/dev/null 2>&1; then
+      echo "OK: relay 0.0.0.0:${RELAY_PORT} → 127.0.0.1:${TUNNEL_PORT}"
+    else
+      echo "[warn] relay :${RELAY_PORT} not responding — check SSH tunnel on :${TUNNEL_PORT}"
+    fi
+  ' || true
 }
 
 sync_ubuntu_env() {
@@ -147,13 +176,15 @@ case "$cmd" in
   start)
     ensure_ccr
     start_tunnel
-    sync_ubuntu_env
+    if [[ "${CCR_SKIP_ENV_SYNC:-}" != "1" ]]; then
+      sync_ubuntu_env
+    fi
     echo ""
     echo "Ready. Ubuntu ViralOS uses ANTHROPIC_BASE_URL=http://127.0.0.1:${CCR_PORT}"
     echo "  VIRALOS_URL=http://192.168.1.4:3010 npm run verify:e2e-real"
     ;;
   stop) stop_tunnel ;;
-  restart) stop_tunnel; ensure_ccr; start_tunnel; sync_ubuntu_env ;;
+  restart) stop_tunnel; ensure_ccr; start_tunnel; [[ "${CCR_SKIP_ENV_SYNC:-}" != "1" ]] && sync_ubuntu_env ;;
   status) status ;;
   sync-env) sync_ubuntu_env ;;
   ccr-only) ensure_ccr ;;

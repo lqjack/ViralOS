@@ -38,7 +38,12 @@
     "ops:ccr:restart": "bash scripts/ops/ccr-tunnel.sh restart",
     "ops:ccr:sync-env": "bash scripts/ops/ccr-tunnel.sh sync-env",
     "ops:ccr:env-local": "node scripts/load-ccr-anthropic-env.mjs --write-env-local",
-    "ops:ubuntu:llm": "bash scripts/ops/ccr-tunnel.sh start && REMOTE=jack@192.168.1.4 npm run deploy:ubuntu:sync && VIRALOS_URL=http://192.168.1.4:3010 npm run verify:e2e-real"
+    "ops:ubuntu:llm": "bash scripts/ops/ccr-tunnel.sh start && REMOTE=jack@192.168.1.4 npm run deploy:ubuntu:sync && VIRALOS_URL=http://192.168.1.4:3010 npm run verify:e2e-real",
+    "ops:litellm:start": "bash scripts/ops/litellm-stack.sh start",
+    "ops:litellm:status": "bash scripts/ops/litellm-stack.sh status",
+    "ops:litellm:env-local": "node scripts/load-litellm-env.mjs --write-env-local",
+    "ops:litellm:env-public": "node scripts/load-litellm-env.mjs --write-env-local --public",
+    "ops:ccr:tunnel-mac": "bash scripts/ops/setup-ccr-tunnel-mac.sh"
   },
   "dependencies": {
     "next": "14.2.35",

@@ -1,0 +1,6 @@
+  # viralos-ccr-mac: LiteLLM → Ubuntu relay :3457 → SSH tunnel → Mac CCR → OpenRouter
+  - model_name: ccr-mac
+    litellm_params:
+      model: anthropic/claude-sonnet-4-20250514
+      api_base: http://host.docker.internal:3457
+      api_key: os.environ/OPENROUTER_API_KEY
