@@ -12,7 +12,7 @@
 | Shipped design (trilogy + code) | **Complete** — [implementation-map.md](./implementation-map.md) |
 | Application code gaps | **None** for P0–P2 |
 | Local verification (macOS, off-LAN) | **Passing** — `verify:func` 24/24 |
-| Ubuntu / cross-public-network ops | **Deferred until LAN** — [lan-resume-checklist.md](./lan-resume-checklist.md) |
+| Ubuntu / LAN ops | **Partial** — deployed `192.168.1.4:3010`; real E2E needs `ANTHROPIC_API_KEY` in `~/ViralOS/.env` |
 | Cognitive OS (`docs/hci-*`) | **Deferred** — vision archive only |
 
 ---
@@ -25,7 +25,8 @@
 | P1 | Campaign pipeline, SSE API, no-mock, tests | Done | `lib/`, `pages/` |
 | P1 | Ubuntu deploy scripts (code) | Done | [deploy-ubuntu.md](./deploy-ubuntu.md) |
 | P2 | Local off-LAN gates | Done | `verify:local-design`, [examples/README.md](../examples/README.md) |
-| P3 | Ubuntu deploy + real E2E + cross-repo live | **LAN only** | [lan-resume-checklist.md](./lan-resume-checklist.md) |
+| P3 | Ubuntu deploy + cross-repo live | **Done on LAN** | `REMOTE=jack@192.168.1.4` |
+| P3 | Real LLM E2E on Ubuntu | **Open** | Set `ANTHROPIC_API_KEY` in `~/ViralOS/.env` → `verify:e2e-real` |
 | P4 | Public `:8001` ingress, MCP plugin, campaign DB | Backlog | [todo.md](./todo.md) § P4 |
 
 ---
@@ -37,9 +38,9 @@
 | `npm run verify:func` | No | No | **24/24 PASS** (2026-05-28) |
 | `npm run verify:local-design` | No | Optional (CLI) | **PASS** — func; CLI skipped without `.env.local` sk-ant key |
 | `npm run verify:full` | No (CI OK) | No | **10/10 PASS** (2026-05-28) |
-| `npm run deploy:ubuntu:sync` | Yes (LAN) | No | **Blocked** — SSH timeout `192.168.1.4` / `ssh.datapro.asia` |
-| `npm run verify:ubuntu:all` | Yes | Yes (`.env`) | **Blocked** — OPS-1 / OPS-3 |
-| `npm run verify:cross-repo-live` | Yes + gateway | No | **Blocked** — `:8001` gateway down off-LAN |
+| `npm run deploy:ubuntu:sync` | Yes (LAN) | No | **PASS** — `REMOTE=jack@192.168.1.4` |
+| `npm run verify:ubuntu:all` | Yes | Yes (`.env`) | **PASS** smoke; SKIP real E2E until key in `.env` |
+| `npm run verify:cross-repo-live` | Yes + gateway | No | **PASS** — `API_PROXY_BASE_URL=http://192.168.1.4:8001` |
 
 **Default gate while off-LAN:** `npm run verify:all` → `verify:local-design`
 
@@ -88,3 +89,4 @@ ViralOS pointer: [cross-repo-reuse-and-roadmap.md](./cross-repo-reuse-and-roadma
 |------|--------|
 | 2026-05-27 | Initial snapshot: design complete, P3 LAN-deferred, local gates documented |
 | 2026-05-28 | Re-verified: `verify:func` 24/24, `verify:full` 10/10, `verify:local-design` PASS; P3 still blocked off-LAN |
+| 2026-05-28 | LAN: deploy to `192.168.1.4:3010`, `verify:cross-repo-live` PASS, `verify:ubuntu:all` func+smoke; smoke-test proxy-aware |

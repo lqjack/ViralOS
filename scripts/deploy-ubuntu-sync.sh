@@ -2,7 +2,8 @@
 # macOS → Ubuntu: rsync sources, then remote build + start on Ubuntu (not localhost).
 set -euo pipefail
 
-REMOTE="${REMOTE:-jack@ssh.datapro.asia}"
+# LAN: REMOTE=jack@192.168.1.4  |  tunnel: jack@ssh.datapro.asia
+REMOTE="${REMOTE:-jack@192.168.1.4}"
 REMOTE_DIR="${REMOTE_DIR:-~/ViralOS}"
 VIRALOS_PORT="${VIRALOS_PORT:-3010}"
 
@@ -10,9 +11,10 @@ SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=25)
 if [[ -n "${DATAPRO_SSH_IDENTITY:-}" && -f "${DATAPRO_SSH_IDENTITY}" ]]; then
   SSH_OPTS+=(-i "${DATAPRO_SSH_IDENTITY}")
 fi
+RSYNC_SSH=(ssh "${SSH_OPTS[@]}")
 
 echo "==> Sync ViralOS → ${REMOTE}:${REMOTE_DIR}"
-rsync -avz --delete "${SSH_OPTS[@]}" \
+rsync -avz --delete -e "${RSYNC_SSH[*]}" \
   --exclude node_modules \
   --exclude .next \
   --exclude .git \

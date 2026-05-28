@@ -30,7 +30,10 @@ grep -q '^API_PROXY_BASE_URL=' .env \
 export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=4096}"
 
 echo "==> npm ci"
-npm ci
+if ! npm ci; then
+  echo "[warn] npm ci failed (lock drift?) — falling back to npm install"
+  npm install
+fi
 
 echo "==> npm run build (on Ubuntu)"
 npm run build

@@ -26,8 +26,19 @@ async function json(path, init) {
   return { response, body }
 }
 
+async function isProxyConfigured() {
+  const { response, body } = await json('/api/integrations/viralos/campaigns/schema')
+  if (response.status === 503 && body?.hint) return false
+  return response.status >= 200 && response.status < 500
+}
+
 async function main() {
   console.log(`Running smoke tests against ${BASE_URL}`)
+
+  const proxyConfigured = await isProxyConfigured()
+  if (proxyConfigured) {
+    console.log('  (proxy mode: API_PROXY_BASE_URL is set on server)')
+  }
 
   const results = []
 
@@ -54,16 +65,30 @@ async function main() {
     if (body?.status !== 'ok') throw new Error('Expected status ok')
   }))
 
-  results.push(await check('GET /api/social-media-content handles missing proxy config', async () => {
+  results.push(await check('GET /api/social-media-content proxy behavior', async () => {
     const { response, body } = await json('/api/social-media-content')
-    if (response.status !== 503) throw new Error(`Expected 503, got ${response.status}`)
-    if (!body?.hint) throw new Error('Expected proxy configuration hint')
+    if (!proxyConfigured) {
+      if (response.status !== 503) throw new Error(`Expected 503, got ${response.status}`)
+      if (!body?.hint) throw new Error('Expected proxy configuration hint')
+      return
+    }
+    if (response.status === 503 && body?.hint) {
+      throw new Error('Unexpected 503 hint when proxy is configured')
+    }
+    if (response.status >= 500) {
+      throw new Error(`Upstream error ${response.status}`)
+    }
   }))
 
-  results.push(await check('GET /api/integrations/viralos proxy requires API_PROXY_BASE_URL', async () => {
+  results.push(await check('GET /api/integrations/viralos proxy behavior', async () => {
     const { response, body } = await json('/api/integrations/viralos/campaigns/schema')
-    if (response.status !== 503) throw new Error(`Expected 503, got ${response.status}`)
-    if (!body?.hint) throw new Error('Expected proxy configuration hint')
+    if (!proxyConfigured) {
+      if (response.status !== 503) throw new Error(`Expected 503, got ${response.status}`)
+      if (!body?.hint) throw new Error('Expected proxy configuration hint')
+      return
+    }
+    if (response.status !== 200) throw new Error(`Expected 200 from gateway, got ${response.status}`)
+    if (!body?.$schema && !body?.title) throw new Error('Expected campaign schema JSON from gateway')
   }))
 
   results.push(await check('POST /api/campaign requires ANTHROPIC_API_KEY when unset', async () => {

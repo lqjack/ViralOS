@@ -62,12 +62,13 @@ When the user asked to clear **issue/todo by priority**: **one turn = drain acti
 
 Checklist:
 
-- [ ] **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
-- [ ] **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
-- [ ] **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
-- [ ] invest-ai gateway running on `:8001`
-- [ ] `verify:cross-repo-live` passes on Ubuntu
+- [x] **OPS-1** Deploy on Ubuntu (`REMOTE=jack@192.168.1.4 npm run deploy:ubuntu:sync`) — 2026-05-28
+- [x] **OPS-1** `verify:ubuntu:all` func + smoke on Ubuntu — 24/24 + 10/10 (real E2E skipped: no `ANTHROPIC_API_KEY` in `~/ViralOS/.env`)
+- [x] **OPS-3** SSH via LAN `jack@192.168.1.4` (use `REMOTE=jack@192.168.1.4` for sync)
+- [x] invest-ai gateway running on `:8001`
+- [x] `verify:cross-repo-live` passes (Mac → `http://192.168.1.4:8001`)
 - [ ] **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
+- [ ] **OPS-1** `verify:e2e-real` on Ubuntu (set `ANTHROPIC_API_KEY` in `~/ViralOS/.env`)
 
 **LAN resume:** [lan-resume-checklist.md](./lan-resume-checklist.md) · `npm run verify:lan-resume`
 
@@ -128,7 +129,7 @@ Checklist:
 - [x] Gateway client unit tests (`fetchRouteCatalog`, `ingestCampaign`, `searchCampaigns`, schema)
 - [x] SSE pipeline contract tests (`sse-campaign-e2e.test.mjs`)
 - [x] `GET /api/health` liveness + smoke
-- [ ] `verify:cross-repo-live` on Ubuntu with gateway running → **moved to P3**
+- [x] `verify:cross-repo-live` on Ubuntu with gateway running — **P3 done** (2026-05-28)
 
 ---
 
@@ -177,8 +178,9 @@ API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live
 | `verify:func` | **24/24** PASS | macOS |
 | `verify:local-design` | **PASS** — func; CLI skipped (no `.env.local` `sk-ant-*`; shell proxy ignored) | macOS |
 | `verify:full` | **10/10** smoke (after build) | macOS |
-| `verify:ubuntu:all` | Not run | Ubuntu — **P3** (SSH/LAN blocked) |
-| `verify:cross-repo-live` | Not run | Ubuntu + gateway — **P3** (`:8001` unreachable) |
+| `verify:ubuntu:all` | **PASS** func + smoke; SKIP real E2E (no key in `.env`) | Ubuntu `192.168.1.4:3010` |
+| `verify:cross-repo-live` | **PASS** | LAN gateway `192.168.1.4:8001` |
+| `deploy:ubuntu:sync` | **PASS** | `REMOTE=jack@192.168.1.4` |
 
 ---
 

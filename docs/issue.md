@@ -256,8 +256,9 @@ The May 2026 deploy incident was a **symptom**, not the root strategic issue. In
 | `npm run verify:func` | **24/24** | incl. gateway + SSE contract tests |
 | `npm run verify:local-design` | **PASS** | func always; CLI skipped without `.env.local` `sk-ant-*` |
 | `npm run verify:full` | build + **10/10** smoke | after `npm run build` |
-| `verify:ubuntu:all` | **Not run** | blocked by OPS-1 / OPS-3 (SSH timeout off-LAN) |
-| `verify:cross-repo-live` | **Not run** | blocked by gateway `:8001` + OPS-1 |
+| `verify:ubuntu:all` | **PASS** (func + smoke) | Ubuntu `192.168.1.4:3010`; real E2E pending `.env` key |
+| `verify:cross-repo-live` | **PASS** | LAN gateway `:8001` + ingest |
+| `deploy:ubuntu:sync` | **PASS** | `REMOTE=jack@192.168.1.4` (rsync `-e ssh` fix) |
 
 ## Decisions (record)
 

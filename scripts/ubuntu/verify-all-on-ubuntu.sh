@@ -13,6 +13,13 @@ export VIRALOS_URL="$SMOKE_TEST_URL"
 
 cd "$APP_DIR"
 
+if [[ -f .env ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source .env
+  set +a
+fi
+
 echo "==> verify:func"
 npm run verify:func
 
