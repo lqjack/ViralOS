@@ -20,6 +20,8 @@ node --version
 npm --version
 
 test -f .env || cp .env.example .env
+# Next.js `next start` loads .env.local at runtime; keep in sync with .env
+cp .env .env.local
 if ! grep -q '^ANTHROPIC_API_KEY=.' .env 2>/dev/null; then
   echo "[warn] ANTHROPIC_API_KEY not set in .env — POST /api/campaign will return 503 until set"
 fi
@@ -58,6 +60,10 @@ stop_old
 echo "==> Starting ViralOS on 0.0.0.0:${PORT}"
 (
   cd "$APP_DIR"
+  set -a
+  # shellcheck disable=SC1091
+  source .env.local
+  set +a
   PORT="$PORT" HOSTNAME=0.0.0.0 nohup npm run start >> "$LOG_FILE" 2>&1 &
   echo $! > "$PID_FILE"
 )

@@ -9,23 +9,23 @@
 **Code HEAD:** see `git log -1 --oneline` (update on each status sync commit)
 
 <!-- CURSOR_HOOK_TODO:START -->
-## Hook priorities (auto-sync) — 2026-05-28 08:33 UTC
+## Hook priorities (auto-sync) — 2026-05-28 14:03 UTC
 
 > After auto-commit. Top-down, then re-run verify. Opt out: `.cursor/no-auto-retro`  
 > Cross-repo: `plugins/_hooks/BEST-PRACTICES.md` (llm-gateway) · ViralOS `PROJECT-STATUS.md`
 
 ### Backlog autopilot (mandatory for agents)
 
-When the user asked to clear **issue/todo by priority**: **one turn = drain actionable queue** — `bun run backlog:list` then loop `backlog:next` → implement → `verify:func` → mark `[x]` until done. **Forbidden:** stop after one item; “下一项将自动开干” without implementing that item in the same turn; “pick A or B” / “confirm before next”. Full policy: [plugins/_hooks/BACKLOG_AUTOPILOT.md](../plugins/_hooks/BACKLOG_AUTOPILOT.md).
+When the user asked to clear **issue/todo by priority**: **one turn = drain actionable queue** — `bun run backlog:list` then loop `backlog:next` → implement → `verify:func` → mark `[x]` until done. **Forbidden:** stop after one item; “下一项将自动开干” without implementing that item in the same turn; “pick A or B” / “confirm before next”. Policy: [plugins/_hooks/BACKLOG_AUTOPILOT.md](../plugins/_hooks/BACKLOG_AUTOPILOT.md) · Plugin digest: [plugins/_shared/AGENT-BACKLOG-AUTOPILOT.md](../plugins/_shared/AGENT-BACKLOG-AUTOPILOT.md) · [plugins/HOOKS.md](../plugins/HOOKS.md).
 
 ### P3 — fix in order
 
-- [ ] (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
-- [ ] (existing backlog) **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
-- [ ] (existing backlog) **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
-- [ ] (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
-- [ ] (existing backlog) `verify:cross-repo-live` passes on Ubuntu
-- [ ] (existing backlog) invest-ai gateway running on `:8001`
+- [ ] (existing backlog) (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
+- [ ] (existing backlog) (existing backlog) **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
+- [ ] (existing backlog) (existing backlog) **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
+- [ ] (existing backlog) (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
+- [ ] (existing backlog) (existing backlog) `verify:cross-repo-live` passes on Ubuntu
+- [ ] (existing backlog) (existing backlog) invest-ai gateway running on `:8001`
 
 <!-- CURSOR_HOOK_TODO:END -->
 
@@ -68,7 +68,7 @@ Checklist:
 - [x] invest-ai gateway running on `:8001`
 - [x] `verify:cross-repo-live` passes (Mac → `http://192.168.1.4:8001`)
 - [ ] **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
-- [ ] **OPS-1** `verify:e2e-real` on Ubuntu (set `ANTHROPIC_API_KEY` in `~/ViralOS/.env`)
+- [x] **OPS-1** `verify:e2e-real` on Ubuntu — PASS via CCR (`~/.claude-code-router/config.json` → `.env` + Mac `ccr` + SSH `-R 3456`)
 
 **LAN resume:** [lan-resume-checklist.md](./lan-resume-checklist.md) · `npm run verify:lan-resume`
 

@@ -71,6 +71,30 @@ SMOKE_TEST_URL=http://127.0.0.1:3010 npm run smoke-test
 VIRALOS_URL=http://192.168.1.4:3010 npm run verify:ubuntu
 ```
 
+### 3.2.1 CCR / OpenRouter（无 `sk-ant-` 时）
+
+从 Mac 的 `~/.claude-code-router/config.json` 写入 Ubuntu `.env`（勿提交密钥）：
+
+```bash
+# Mac：启动 CCR，并建立反向隧道（Ubuntu 上 127.0.0.1:3456 → Mac CCR）
+ccr start
+ssh -f -N -R 3456:127.0.0.1:3456 jack@192.168.1.4
+
+# 将 providers[0].api_key 与 ANTHROPIC_BASE_URL 写入 Ubuntu
+node scripts/load-ccr-anthropic-env.mjs --print-env-file | \
+  ssh jack@192.168.1.4 'cd ~/ViralOS && grep -v "^ANTHROPIC_" .env > .env.tmp; cat >> .env.tmp; mv .env.tmp .env && cp .env .env.local'
+
+# 重新部署（会 source .env.local 再 next start）
+REMOTE=jack@192.168.1.4 npm run deploy:ubuntu:sync
+```
+
+Mac 本地：
+
+```bash
+eval "$(node scripts/load-ccr-anthropic-env.mjs)"
+npm run verify:local-design   # 可选 CLI 真实 LLM
+```
+
 ### 3.3 真实 Anthropic 端到端（无 mock）
 
 服务器 `.env` 与客户端均需有效 `ANTHROPIC_API_KEY`：

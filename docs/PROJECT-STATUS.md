@@ -26,7 +26,7 @@
 | P1 | Ubuntu deploy scripts (code) | Done | [deploy-ubuntu.md](./deploy-ubuntu.md) |
 | P2 | Local off-LAN gates | Done | `verify:local-design`, [examples/README.md](../examples/README.md) |
 | P3 | Ubuntu deploy + cross-repo live | **Done on LAN** | `REMOTE=jack@192.168.1.4` |
-| P3 | Real LLM E2E on Ubuntu | **Open** | Set `ANTHROPIC_API_KEY` in `~/ViralOS/.env` → `verify:e2e-real` |
+| P3 | Real LLM E2E on Ubuntu | **Done** | CCR + `load-ccr-anthropic-env.mjs` + SSH `-R 3456` |
 | P4 | Public `:8001` ingress, MCP plugin, campaign DB | Backlog | [todo.md](./todo.md) § P4 |
 
 ---
@@ -39,7 +39,7 @@
 | `npm run verify:local-design` | No | Optional (CLI) | **PASS** — func; CLI skipped without `.env.local` sk-ant key |
 | `npm run verify:full` | No (CI OK) | No | **10/10 PASS** (2026-05-28) |
 | `npm run deploy:ubuntu:sync` | Yes (LAN) | No | **PASS** — `REMOTE=jack@192.168.1.4` |
-| `npm run verify:ubuntu:all` | Yes | Yes (`.env`) | **PASS** smoke; SKIP real E2E until key in `.env` |
+| `npm run verify:ubuntu:all` | Yes | CCR/OpenRouter | **PASS** incl. `verify:e2e-real` + cross-repo |
 | `npm run verify:cross-repo-live` | Yes + gateway | No | **PASS** — `API_PROXY_BASE_URL=http://192.168.1.4:8001` |
 
 **Default gate while off-LAN:** `npm run verify:all` → `verify:local-design`
