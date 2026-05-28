@@ -54,7 +54,14 @@ case "$cmd" in
     ;;
   status)
     ssh "${SSH_OPTS[@]}" "$REMOTE" 'curl -sf http://127.0.0.1:4000/health -H "Authorization: Bearer sk-gateway-master-key" && echo " litellm:4000 OK" || echo " litellm:4000 DOWN"'
-    curl -sf -m 15 "https://litellm.datapro.asia/health" -H "Authorization: Bearer sk-gateway-master-key" && echo " litellm.datapro.asia OK" || echo " litellm.datapro.asia unreachable"
+    if curl -sf -m 20 "https://litellm.datapro.asia/health" -H "Authorization: Bearer sk-gateway-master-key" >/dev/null 2>&1; then
+      echo " litellm.datapro.asia OK"
+    elif curl -sk -m 20 "https://litellm.datapro.asia/health" -H "Authorization: Bearer sk-gateway-master-key" >/dev/null 2>&1; then
+      echo " litellm.datapro.asia OK (TLS verify skipped on this host)"
+    else
+      echo " litellm.datapro.asia unreachable"
+    fi
+    ssh "${SSH_OPTS[@]}" "$REMOTE" 'systemctl --user is-active cloudflared-litellm.service 2>/dev/null && echo " cloudflared-litellm: active" || pgrep -af "config-litellm.yml" | head -1 || echo " cloudflared-litellm: down"'
     ;;
   *)
     echo "Usage: $0 {start|sync-env|tunnel-only|litellm-only|status}"
