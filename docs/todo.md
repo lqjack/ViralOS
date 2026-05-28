@@ -9,7 +9,7 @@
 **Code HEAD:** see `git log -1 --oneline` (update on each status sync commit)
 
 <!-- CURSOR_HOOK_TODO:START -->
-## Hook priorities (auto-sync) — 2026-05-28 16:41 UTC
+## Hook priorities (auto-sync) — 2026-05-28 20:53 UTC
 
 > After auto-commit. Top-down, then re-run verify. Opt out: `.cursor/no-auto-retro`  
 > Cross-repo: `plugins/_hooks/BEST-PRACTICES.md` (llm-gateway) · ViralOS `PROJECT-STATUS.md`
@@ -20,7 +20,11 @@ When the user asked to clear **issue/todo by priority**: **one turn = drain acti
 
 ### P3 — fix in order
 
-- [ ] (existing backlog) (existing backlog) (existing backlog) (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-vir
+- [ ] (existing backlog) (existing backlog) (existing backlog) (existing backlog) (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:s
+- [ ] (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
+- [ ] (existing backlog) NeuraDesk MCP plugin for campaigns (llm-gateway stub; cross-repo Phase 2+)
+- [ ] (existing backlog) Persistent campaign history DB (out of current design scope)
+- [ ] (existing backlog) Public Cloudflare ingress for invest-ai gateway `:8001` (enables Vercel proxy + auto-ingest from internet)
 
 <!-- CURSOR_HOOK_TODO:END -->
 

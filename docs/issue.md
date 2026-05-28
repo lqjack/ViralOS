@@ -8,109 +8,105 @@
 **Code HEAD:** see [PROJECT-STATUS.md](./PROJECT-STATUS.md) · `git log -1`
 
 <!-- CURSOR_HOOK_RETRO:START -->
-## Hook retro (auto) — 2026-05-28 16:41 UTC
+## Hook retro (auto) — 2026-05-28 20:53 UTC
 
 | Field | Value |
 |-------|-------|
 | Profile | `viralos` |
 | Root | `/Users/liu/Desktop/ViralOS` |
-| HEAD | `c6a2177` |
+| HEAD | `4ba21b3` |
 | Verify | `npm run verify:func` → **PASS** |
 
 **Practices:** [docs/PROJECT-STATUS.md](./PROJECT-STATUS.md) · off-LAN `verify:local-design`
 
 ### Session changes (last commit)
 
-- `lib/campaign.js`
-- `package.json`
-- `scripts/load-ccr-anthropic-env.mjs`
-- `scripts/load-litellm-env.mjs`
-- `scripts/ops/ccr-tunnel.sh`
+- `docs/issue.md`
+- `docs/todo.md`
 - `scripts/ops/litellm-stack.sh`
-- `scripts/ops/setup-ccr-tunnel-mac.sh`
-- `scripts/read-ccr-config.mjs`
-- `scripts/ubuntu/ccr-docker-relay.py`
-- `scripts/ubuntu/ensure-litellm-ccr.sh`
-- `scripts/ubuntu/litellm-ccr-model.yaml`
 - `scripts/ubuntu/setup-litellm-tunnel.sh`
 
 ### Design vs implementation gaps
 
-- **P3** — (existing backlog) (existing backlog) (existing backlog) (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-vir
+- **P3** — (existing backlog) (existing backlog) (existing backlog) (existing backlog) (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:s
+- **P3** — (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
+- **P3** — (existing backlog) NeuraDesk MCP plugin for campaigns (llm-gateway stub; cross-repo Phase 2+)
+- **P3** — (existing backlog) Persistent campaign history DB (out of current design scope)
+- **P3** — (existing backlog) Public Cloudflare ingress for invest-ai gateway `:8001` (enables Vercel proxy + auto-ingest from internet)
 
 ### Verify output (tail)
 
 ```
-ingestCampaign POSTs viralos-campaign-v1 body
+: ingestCampaign POSTs viralos-campaign-v1 body
 ok 13 - ingestCampaign POSTs viralos-campaign-v1 body
   ---
-  duration_ms: 0.960331
+  duration_ms: 1.418582
   type: 'test'
   ...
 # Subtest: ingestCampaign sends x-viralos-ingest-token when set
 ok 14 - ingestCampaign sends x-viralos-ingest-token when set
   ---
-  duration_ms: 33.254669
+  duration_ms: 1.124944
   type: 'test'
   ...
 # Subtest: searchCampaigns passes query params
 ok 15 - searchCampaigns passes query params
   ---
-  duration_ms: 1.355366
+  duration_ms: 1.260245
   type: 'test'
   ...
 # Subtest: hasRealTokenUsage requires tokens
 ok 16 - hasRealTokenUsage requires tokens
   ---
-  duration_ms: 1.603185
+  duration_ms: 1.668278
   type: 'test'
   ...
 # Subtest: assertRealAgentUsage throws without usage
 ok 17 - assertRealAgentUsage throws without usage
   ---
-  duration_ms: 1.54181
+  duration_ms: 0.561754
   type: 'test'
   ...
 # Subtest: assertNoMockContent rejects mock phrases
 ok 18 - assertNoMockContent rejects mock phrases
   ---
-  duration_ms: 0.433481
+  duration_ms: 1.023477
   type: 'test'
   ...
 # Subtest: assertRealCampaignUsage requires all three agents
 ok 19 - assertRealCampaignUsage requires all three agents
   ---
-  duration_ms: 0.464707
+  duration_ms: 0.789411
   type: 'test'
   ...
 # Subtest: assertCampaignE2eEvents accepts full 4-agent pipeline
 ok 20 - assertCampaignE2eEvents accepts full 4-agent pipeline
   ---
-  duration_ms: 16.955084
+  duration_ms: 3.461451
   type: 'test'
   ...
 # Subtest: assertCampaignE2eEvents rejects missing complete
 ok 21 - assertCampaignE2eEvents rejects missing complete
   ---
-  duration_ms: 0.938209
+  duration_ms: 1.86788
   type: 'test'
   ...
 # Subtest: assertCampaignE2eEvents rejects validation failure
 ok 22 - assertCampaignE2eEvents rejects validation failure
   ---
-  duration_ms: 3.769693
+  duration_ms: 2.770193
   type: 'test'
   ...
 # Subtest: parseSseBuffer extracts JSON events
 ok 23 - parseSseBuffer extracts JSON events
   ---
-  duration_ms: 1.543991
+  duration_ms: 1.892467
   type: 'test'
   ...
 # Subtest: parseSseBuffer keeps partial remainder
 ok 24 - parseSseBuffer keeps partial remainder
   ---
-  duration_ms: 0.304321
+  duration_ms: 0.946414
   type: 'test'
   ...
 1..24
@@ -121,7 +117,7 @@ ok 24 - parseSseBuffer keeps partial remainder
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1736.67197
+# duration_ms 2177.793228
 ```
 
 **Next:** Fix [todo.md](./todo.md) § Hook priorities (auto-sync), P0→P1 first, re-run verify.
