@@ -31,7 +31,14 @@
     "verify:ubuntu:all": "./scripts/ubuntu/verify-all-on-ubuntu.sh",
     "verify:local-design": "node scripts/verify-local-design.mjs",
     "verify:lan-resume": "./scripts/ubuntu/verify-lan-resume.sh",
-    "verify:all": "npm run verify:local-design"
+    "verify:all": "npm run verify:local-design",
+    "ops:ccr:start": "bash scripts/ops/ccr-tunnel.sh start",
+    "ops:ccr:stop": "bash scripts/ops/ccr-tunnel.sh stop",
+    "ops:ccr:status": "bash scripts/ops/ccr-tunnel.sh status",
+    "ops:ccr:restart": "bash scripts/ops/ccr-tunnel.sh restart",
+    "ops:ccr:sync-env": "bash scripts/ops/ccr-tunnel.sh sync-env",
+    "ops:ccr:env-local": "node scripts/load-ccr-anthropic-env.mjs --write-env-local",
+    "ops:ubuntu:llm": "bash scripts/ops/ccr-tunnel.sh start && REMOTE=jack@192.168.1.4 npm run deploy:ubuntu:sync && VIRALOS_URL=http://192.168.1.4:3010 npm run verify:e2e-real"
   },
   "dependencies": {
     "next": "14.2.35",

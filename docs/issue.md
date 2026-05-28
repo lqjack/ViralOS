@@ -8,13 +8,13 @@
 **Code HEAD:** see [PROJECT-STATUS.md](./PROJECT-STATUS.md) · `git log -1`
 
 <!-- CURSOR_HOOK_RETRO:START -->
-## Hook retro (auto) — 2026-05-28 14:03 UTC
+## Hook retro (auto) — 2026-05-28 14:23 UTC
 
 | Field | Value |
 |-------|-------|
 | Profile | `viralos` |
 | Root | `/Users/liu/Desktop/ViralOS` |
-| HEAD | `6f7cf95` |
+| HEAD | `d274b57` |
 | Verify | `npm run verify:func` → **PASS** |
 
 **Practices:** [docs/PROJECT-STATUS.md](./PROJECT-STATUS.md) · off-LAN `verify:local-design`
@@ -22,95 +22,94 @@
 ### Session changes (last commit)
 
 - `docs/PROJECT-STATUS.md`
+- `docs/deploy-ubuntu.md`
 - `docs/issue.md`
 - `docs/todo.md`
-- `scripts/deploy-ubuntu-sync.sh`
-- `scripts/smoke-test.mjs`
+- `scripts/load-ccr-anthropic-env.mjs`
 - `scripts/ubuntu/deploy-viralos.sh`
-- `scripts/ubuntu/verify-all-on-ubuntu.sh`
 
 ### Design vs implementation gaps
 
-- **P3** — (existing backlog) (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
-- **P3** — (existing backlog) (existing backlog) **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
-- **P3** — (existing backlog) (existing backlog) **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
-- **P3** — (existing backlog) (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
-- **P3** — (existing backlog) (existing backlog) `verify:cross-repo-live` passes on Ubuntu
-- **P3** — (existing backlog) (existing backlog) invest-ai gateway running on `:8001`
+- **P3** — (existing backlog) (existing backlog) (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
+- **P3** — (existing backlog) (existing backlog) (existing backlog) **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
+- **P3** — (existing backlog) (existing backlog) (existing backlog) **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
+- **P3** — (existing backlog) (existing backlog) (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
+- **P3** — (existing backlog) (existing backlog) (existing backlog) `verify:cross-repo-live` passes on Ubuntu
+- **P3** — (existing backlog) (existing backlog) (existing backlog) invest-ai gateway running on `:8001`
 
 ### Verify output (tail)
 
 ```
-btest: ingestCampaign POSTs viralos-campaign-v1 body
+st: ingestCampaign POSTs viralos-campaign-v1 body
 ok 13 - ingestCampaign POSTs viralos-campaign-v1 body
   ---
-  duration_ms: 0.99237
+  duration_ms: 1.663647
   type: 'test'
   ...
 # Subtest: ingestCampaign sends x-viralos-ingest-token when set
 ok 14 - ingestCampaign sends x-viralos-ingest-token when set
   ---
-  duration_ms: 1.256141
+  duration_ms: 1.055471
   type: 'test'
   ...
 # Subtest: searchCampaigns passes query params
 ok 15 - searchCampaigns passes query params
   ---
-  duration_ms: 1.043114
+  duration_ms: 1.177214
   type: 'test'
   ...
 # Subtest: hasRealTokenUsage requires tokens
 ok 16 - hasRealTokenUsage requires tokens
   ---
-  duration_ms: 8.301722
+  duration_ms: 2.961601
   type: 'test'
   ...
 # Subtest: assertRealAgentUsage throws without usage
 ok 17 - assertRealAgentUsage throws without usage
   ---
-  duration_ms: 0.565589
+  duration_ms: 1.119994
   type: 'test'
   ...
 # Subtest: assertNoMockContent rejects mock phrases
 ok 18 - assertNoMockContent rejects mock phrases
   ---
-  duration_ms: 0.390664
+  duration_ms: 0.664077
   type: 'test'
   ...
 # Subtest: assertRealCampaignUsage requires all three agents
 ok 19 - assertRealCampaignUsage requires all three agents
   ---
-  duration_ms: 0.552409
+  duration_ms: 0.464605
   type: 'test'
   ...
 # Subtest: assertCampaignE2eEvents accepts full 4-agent pipeline
 ok 20 - assertCampaignE2eEvents accepts full 4-agent pipeline
   ---
-  duration_ms: 1.63296
+  duration_ms: 1.75958
   type: 'test'
   ...
 # Subtest: assertCampaignE2eEvents rejects missing complete
 ok 21 - assertCampaignE2eEvents rejects missing complete
   ---
-  duration_ms: 0.651351
+  duration_ms: 0.746478
   type: 'test'
   ...
 # Subtest: assertCampaignE2eEvents rejects validation failure
 ok 22 - assertCampaignE2eEvents rejects validation failure
   ---
-  duration_ms: 5.916012
+  duration_ms: 3.693776
   type: 'test'
   ...
 # Subtest: parseSseBuffer extracts JSON events
 ok 23 - parseSseBuffer extracts JSON events
   ---
-  duration_ms: 1.272
+  duration_ms: 1.466546
   type: 'test'
   ...
 # Subtest: parseSseBuffer keeps partial remainder
 ok 24 - parseSseBuffer keeps partial remainder
   ---
-  duration_ms: 0.281895
+  duration_ms: 0.473947
   type: 'test'
   ...
 1..24
@@ -121,7 +120,7 @@ ok 24 - parseSseBuffer keeps partial remainder
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 781.809282
+# duration_ms 940.91258
 ```
 
 **Next:** Fix [todo.md](./todo.md) § Hook priorities (auto-sync), P0→P1 first, re-run verify.

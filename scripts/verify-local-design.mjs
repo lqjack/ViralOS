@@ -21,12 +21,12 @@ function run(cmd, args, env = process.env) {
 }
 
 function projectAnthropicKey(env) {
-  const fromFile = readProjectEnvFiles(root).ANTHROPIC_API_KEY
-  if (fromFile?.trim()) return fromFile.trim()
+  const fromFile = readProjectEnvFiles(root).ANTHROPIC_API_KEY?.trim()
+  if (fromFile) return fromFile
   const fromShell = env.ANTHROPIC_API_KEY?.trim()
   if (!fromShell) return null
-  // Ignore non-Anthropic shell aliases (e.g. openrouter_provider,...) without .env.local
-  if (/^sk-ant-/i.test(fromShell)) return fromShell
+  // sk-ant-* (Anthropic) or sk-or-* (OpenRouter via CCR config)
+  if (/^sk-(ant|or)-/i.test(fromShell)) return fromShell
   return null
 }
 
@@ -87,14 +87,18 @@ async function main() {
   const preflight = await anthropicPreflight(projectEnv)
 
   if (preflight.ok) {
-    console.log('\n==> CLI streamCampaign (real Anthropic, no server)')
+    console.log('\n==> CLI streamCampaign (real LLM via CCR or Anthropic, no server)')
     await run('node', ['examples/basic-campaign.js', 'Local Design Verify'], {
       ...preflight.env,
       PLATFORMS: 'twitter'
     })
   } else {
     console.log(`\nSKIP CLI real LLM: ${preflight.reason}`)
-    console.log('  Add ANTHROPIC_API_KEY=sk-ant-... to .env.local for full local-design CLI gate.')
+    if (preflight.reason.includes('unreachable') || preflight.reason.includes('ECONNREFUSED')) {
+      console.log('  Fix: npm run ops:ccr:start   # CCR + SSH tunnel + .env.local from config')
+    } else {
+      console.log('  Fix: npm run ops:ccr:env-local   # write .env.local from ~/.claude-code-router/config.json')
+    }
   }
 
   console.log('\nverify:local-design PASSED')

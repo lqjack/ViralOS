@@ -236,6 +236,7 @@ const campaign = await director.run()
 Shipped design implementation can be verified on macOS while remote Ubuntu ops are deferred:
 
 ```bash
+npm run ops:ccr:env-local     # .env.local from ~/.claude-code-router/config.json
 npm run verify:local-design   # no-mock + 24 unit tests + optional CLI real LLM
 npm run demo                  # ANTHROPIC_API_KEY=... node examples/basic-campaign.js
 ```
@@ -251,14 +252,18 @@ When back on the same LAN as Ubuntu, see [docs/lan-resume-checklist.md](./docs/l
 Build and run on your Ubuntu server (`PORT=3010` by default):
 
 ```bash
-# From macOS: rsync + remote build/start
-npm run deploy:ubuntu:sync
+# CCR + SSH tunnel + sync Ubuntu Anthropic env (uses ~/.claude-code-router/config.json)
+npm run ops:ccr:start
 
-# Verify against Ubuntu (LAN example)
-VIRALOS_URL=http://192.168.1.4:3010 npm run verify:ubuntu
+# From macOS: rsync + remote build/start
+REMOTE=jack@192.168.1.4 npm run deploy:ubuntu:sync
+
+# Full LLM sign-off from Mac
+npm run ops:ubuntu:llm
+# or: VIRALOS_URL=http://192.168.1.4:3010 npm run verify:e2e-real
 ```
 
-On the Ubuntu host: set `ANTHROPIC_API_KEY` in `.env`, then `npm run deploy:ubuntu`.  
+On the Ubuntu host: `npm run ops:ccr:start` on Mac syncs `.env` automatically; then `npm run deploy:ubuntu` if needed.  
 Full guide: [docs/deploy-ubuntu.md](./docs/deploy-ubuntu.md).
 
 ---

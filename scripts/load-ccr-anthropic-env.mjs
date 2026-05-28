@@ -5,7 +5,7 @@
  *    or: node scripts/load-ccr-anthropic-env.mjs --export-for-ubuntu 192.168.1.6
  */
 
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, writeFileSync, chmodSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 
@@ -34,6 +34,14 @@ if (process.argv.includes('--print-env-file')) {
   process.stdout.write(
     `ANTHROPIC_API_KEY=${apiKey}\nANTHROPIC_BASE_URL=${baseUrl}\n`
   )
+  process.exit(0)
+}
+
+if (process.argv.includes('--write-env-local')) {
+  const target = join(process.cwd(), '.env.local')
+  writeFileSync(target, `ANTHROPIC_API_KEY=${apiKey}\nANTHROPIC_BASE_URL=${baseUrl}\n`, { mode: 0o600 })
+  chmodSync(target, 0o600)
+  console.error(`Wrote ${target} (ANTHROPIC_BASE_URL=${baseUrl})`)
   process.exit(0)
 }
 

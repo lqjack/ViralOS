@@ -12,11 +12,14 @@ steps() {
   cat <<EOF
 ViralOS LAN resume checklist (cross-public-network ops deferred until now)
 
+0. Mac — CCR + SSH tunnel + Ubuntu Anthropic env:
+   npm run ops:ccr:start
+
 1. invest-ai gateway on Ubuntu:
    cd ~/dataproaiset/dataproaiset && ./scripts/ubuntu/start-core-gateway.sh
 
 2. Deploy ViralOS (from Mac on LAN):
-   REMOTE=ubuntu@${LAN_HOST} npm run deploy:ubuntu:sync
+   REMOTE=jack@${LAN_HOST} npm run deploy:ubuntu:sync
 
 3. Sign-off on Ubuntu:
    cd ~/ViralOS && npm run verify:ubuntu:all
@@ -25,8 +28,7 @@ ViralOS LAN resume checklist (cross-public-network ops deferred until now)
    API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live
 
 5. From Mac against LAN:
-   VIRALOS_URL=${VIRALOS_URL} npm run verify:ubuntu
-   VIRALOS_URL=${VIRALOS_URL} ANTHROPIC_API_KEY=... npm run verify:ubuntu:real
+   VIRALOS_URL=${VIRALOS_URL} npm run verify:e2e-real
 
 See docs/deploy-ubuntu.md and invest-ai docs/operations/ubuntu-production-deploy.md
 EOF

@@ -9,7 +9,7 @@
 **Code HEAD:** see `git log -1 --oneline` (update on each status sync commit)
 
 <!-- CURSOR_HOOK_TODO:START -->
-## Hook priorities (auto-sync) — 2026-05-28 14:03 UTC
+## Hook priorities (auto-sync) — 2026-05-28 14:23 UTC
 
 > After auto-commit. Top-down, then re-run verify. Opt out: `.cursor/no-auto-retro`  
 > Cross-repo: `plugins/_hooks/BEST-PRACTICES.md` (llm-gateway) · ViralOS `PROJECT-STATUS.md`
@@ -20,12 +20,12 @@ When the user asked to clear **issue/todo by priority**: **one turn = drain acti
 
 ### P3 — fix in order
 
-- [ ] (existing backlog) (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
-- [ ] (existing backlog) (existing backlog) **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
-- [ ] (existing backlog) (existing backlog) **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
-- [ ] (existing backlog) (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
-- [ ] (existing backlog) (existing backlog) `verify:cross-repo-live` passes on Ubuntu
-- [ ] (existing backlog) (existing backlog) invest-ai gateway running on `:8001`
+- [ ] (existing backlog) (existing backlog) (existing backlog) **OPS-1** Deploy on Ubuntu (`deploy:ubuntu:sync` or `deploy-viralos.sh`)
+- [ ] (existing backlog) (existing backlog) (existing backlog) **OPS-1** `npm run verify:ubuntu:all` passes (func + smoke + real E2E)
+- [ ] (existing backlog) (existing backlog) (existing backlog) **OPS-3** SSH/tunnel stable (until then use `verify:local-design` on Mac)
+- [ ] (existing backlog) (existing backlog) (existing backlog) **OPS-4** Vercel `ANTHROPIC_API_KEY` set; proxy URL documented only if reachable
+- [ ] (existing backlog) (existing backlog) (existing backlog) `verify:cross-repo-live` passes on Ubuntu
+- [ ] (existing backlog) (existing backlog) (existing backlog) invest-ai gateway running on `:8001`
 
 <!-- CURSOR_HOOK_TODO:END -->
 

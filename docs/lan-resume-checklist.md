@@ -10,6 +10,15 @@ Cross-public-network SSH/tunnel to Ubuntu is unreliable (OPS-3). Application des
 ## Quick commands
 
 ```bash
+# Mac — CCR + SSH tunnel + Ubuntu .env (one command)
+npm run ops:ccr:start
+
+# Mac — local .env.local from ~/.claude-code-router/config.json
+npm run ops:ccr:env-local
+
+# Mac — full Ubuntu LLM path (CCR + deploy + e2e-real)
+npm run ops:ubuntu:llm
+
 # Mac — now (off-LAN)
 npm run verify:local-design
 
@@ -24,11 +33,12 @@ LAN_RESUME_RUN=1 VIRALOS_URL=http://192.168.1.4:3010 npm run verify:lan-resume
 
 | Step | Where | Command |
 |------|-------|---------|
+| 0 | Mac | `npm run ops:ccr:start` — CCR + SSH `-R 3456` + sync Ubuntu `.env` |
 | 1 | Ubuntu | `cd ~/dataproaiset/dataproaiset && ./scripts/ubuntu/start-core-gateway.sh` |
-| 2 | Mac | `REMOTE=ubuntu@192.168.1.4 npm run deploy:ubuntu:sync` |
+| 2 | Mac | `REMOTE=jack@192.168.1.4 npm run deploy:ubuntu:sync` |
 | 3 | Ubuntu | `cd ~/ViralOS && npm run verify:ubuntu:all` |
 | 4 | Ubuntu | `API_PROXY_BASE_URL=http://127.0.0.1:8001 npm run verify:cross-repo-live` |
-| 5 | Mac | `VIRALOS_URL=http://192.168.1.4:3010 npm run verify:ubuntu:real` |
+| 5 | Mac | `VIRALOS_URL=http://192.168.1.4:3010 npm run verify:e2e-real` |
 
 Track checklist items in [todo.md § P3](./todo.md#p3--operator-verification-open--lan-deferred).
 
